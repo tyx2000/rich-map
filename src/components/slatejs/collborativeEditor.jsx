@@ -89,7 +89,7 @@ function CollaborativeEditor() {
 
 export default function CollaborativeEditorWrapper() {
   return (
-    <LiveblocksProvider publicApiKey="pk_dev_uy9zcncnDVnxXbPMUr0j4T330lm_IW6KlZN6hPLFsb6UOLqXTMQRezT0eS8fdI_C">
+    <LiveblocksProvider publicApiKey={import.meta.env.VITE_LIVE_BLOCK_PUB_KEY}>
       <RoomProvider id="slate-collaborative-editor">
         <ClientSideSuspense fallback={<div>Loading...</div>}>
           <CollaborativeEditor />
