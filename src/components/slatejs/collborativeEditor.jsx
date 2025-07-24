@@ -19,7 +19,7 @@ function SlateEditor({ sharedType, provider }) {
       withCursors(withYjs(createEditor(), sharedType), provider.awareness, {
         data: {
           name: Math.random().toString(36).substring(2, 7),
-          color: "#D670D6",
+          color: "#5E08A0",
         },
       }),
     );

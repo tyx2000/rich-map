@@ -48,6 +48,7 @@ function Selection({ data, selectionRects, caretPosition }) {
 export function Cursors({ children }) {
   const containerRef = useRef(null);
   const [cursors] = useRemoteCursorOverlayPositions({ containerRef });
+  console.log({ cursors });
 
   return (
     <div className={styles.cursor} ref={containerRef}>
