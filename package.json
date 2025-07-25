@@ -27,6 +27,7 @@
     "react-dom": "^19.1.0",
     "react-router": "^7.7.0",
     "slate": "^0.117.2",
+    "slate-history": "^0.113.1",
     "slate-react": "^0.117.4",
     "y-prosemirror": "^1.2.16",
     "y-websocket": "^2.1.0",

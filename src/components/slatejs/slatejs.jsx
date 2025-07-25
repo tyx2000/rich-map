@@ -3,7 +3,7 @@ import { createEditor, Editor, Transforms, Element, Node, Point } from "slate";
 import { Slate, withReact, Editable } from "slate-react";
 import * as Y from "yjs";
 
-import { LiveblocksProvider, RoomProvider } from "@liveblocks/react/suspense";
+import Toolbar from "./toolbar";
 
 const CustomerEditor = {
   isBoldMarkActive(editor) {
@@ -26,11 +26,6 @@ const CustomerEditor = {
   },
   toggleCodeBlock(editor) {
     const isActive = this.isCodeBlockActive(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "paragraph" : "code" },
-      { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) },
-    );
     Transforms.setNodes(
       editor,
       { type: isActive ? null : "code" },
@@ -90,12 +85,13 @@ export default function Slatejs() {
     () =>
       // deserialize(localStorage.getItem("content-serialize") || ""),
       JSON.parse(
-        localStorage.getItem("content") || [
-          {
-            type: "paragraph",
-            children: [{ text: "A line of text in a paragraph." }],
-          },
-        ],
+        localStorage.getItem("content") ||
+          JSON.stringify([
+            {
+              type: "paragraph",
+              children: [{ text: "A line of text in a paragraph." }],
+            },
+          ]),
       ),
     [],
   );
@@ -155,7 +151,6 @@ export default function Slatejs() {
         const isAstChange = editor.operations.some(
           (op) => "set_selection" !== op.type,
         );
-        console.log("editor value", value, editor);
         if (isAstChange) {
           const content = JSON.stringify(value);
           localStorage.setItem("content", content);
@@ -163,25 +158,17 @@ export default function Slatejs() {
         }
       }}
     >
-      <div>
-        <button
-          onClick={(event) => {
-            event.preventDefault();
-            CustomerEditor.toggleBoldMark(editor);
-          }}
-        >
-          Bold
-        </button>
-        <button
-          onClick={(event) => {
-            event.preventDefault();
-            CustomerEditor.toggleCodeBlock(editor);
-          }}
-        >
-          Code Block
-        </button>
-      </div>
+      <Toolbar />
       <Editable
+        style={{
+          padding: "20px",
+          border: "1px solid #ccc",
+          flex: 1,
+          backgroundColor: "#fff",
+          color: "#000",
+          borderRadius: "10px",
+          outline: "none",
+        }}
         renderElement={renderElement}
         renderLeaf={renderLeaf}
         onKeyDown={handleEditorKeydown}

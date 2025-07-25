@@ -1,0 +1,55 @@
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  height: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 0 10px;
+}
+
+.toolItem {
+  position: relative;
+}
+
+.toolItem > button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 10px;
+  &:hover {
+    color: red;
+    .toolItemOptions {
+      z-index: -1;
+      opacity: 0;
+      display: none;
+    }
+  }
+}
+
+.toolItemOptions {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 12px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  transition: all linear 0.2s;
+  z-index: 999;
+  opacity: 1;
+  display: block;
+
+  div {
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all linear 0.2s;
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+}

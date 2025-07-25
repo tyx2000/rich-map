@@ -2,4 +2,7 @@
   flex: 1;
   background-color: #fafafa;
   padding: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
