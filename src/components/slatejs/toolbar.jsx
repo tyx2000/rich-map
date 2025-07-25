@@ -71,15 +71,6 @@ export default function Toolbar() {
   const handleToolItemAction = (tool) => {
     if (tool.children) {
       console.log(tool.children);
-      const container = document.getElementById("toolItemOptionsContainer");
-      createPortal(
-        <Fragment>
-          {tool.children.map((child) => (
-            <div key={child.name}>{child.name}</div>
-          ))}
-        </Fragment>,
-        container,
-      );
     } else {
     }
   };
