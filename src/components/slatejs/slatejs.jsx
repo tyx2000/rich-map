@@ -1,43 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { createEditor, Editor, Transforms, Element, Node, Point } from "slate";
-import { Slate, withReact, Editable } from "slate-react";
-import * as Y from "yjs";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createEditor, Editor, Transforms, Element, Node, Point } from 'slate';
+import { Slate, withReact, Editable } from 'slate-react';
+import * as Y from 'yjs';
+import slateCommand from './slateCommand';
 
-import Toolbar from "./toolbar";
-
-const CustomerEditor = {
-  isBoldMarkActive(editor) {
-    const marks = Editor.marks(editor);
-    return marks ? marks.bold === true : false;
-  },
-  isCodeBlockActive(editor) {
-    const [match] = Editor.nodes(editor, {
-      match: (n) => n.type === "code",
-    });
-    return !!match;
-  },
-  toggleBoldMark(editor) {
-    const isActive = this.isBoldMarkActive(editor);
-    if (isActive) {
-      Editor.removeMark(editor, "bold");
-    } else {
-      Editor.addMark(editor, "bold", true);
-    }
-  },
-  toggleCodeBlock(editor) {
-    const isActive = this.isCodeBlockActive(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? null : "code" },
-      { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) },
-    );
-  },
-};
+import Toolbar from './toolbar';
 
 const CodeElement = (props) => {
   return (
     <pre
-      style={{ backgroundColor: "red", color: "#fff" }}
+      style={{ backgroundColor: 'red', color: '#fff' }}
       {...props.attributes}
     >
       <code>{props.children}</code>
@@ -55,7 +27,7 @@ const LeafElement = (props) => {
   return (
     <span
       {...props.attributes}
-      style={{ fontWeight: props.leaf.bold ? "bold" : "normal" }}
+      style={{ fontWeight: props.leaf.bold ? 'bold' : 'normal' }}
     >
       {props.children}
     </span>
@@ -63,11 +35,11 @@ const LeafElement = (props) => {
 };
 
 const serialize = (value) => {
-  return value.map((n) => Node.string(n)).join("\n");
+  return value.map((n) => Node.string(n)).join('\n');
 };
 
 const deserialize = (string) => {
-  return string.split("\n").map((line) => {
+  return string.split('\n').map((line) => {
     return {
       children: [{ text: line }],
     };
@@ -85,11 +57,11 @@ export default function Slatejs() {
     () =>
       // deserialize(localStorage.getItem("content-serialize") || ""),
       JSON.parse(
-        localStorage.getItem("content") ||
+        localStorage.getItem('content') ||
           JSON.stringify([
             {
-              type: "paragraph",
-              children: [{ text: "A line of text in a paragraph." }],
+              type: 'paragraph',
+              children: [{ text: 'A line of text in a paragraph.' }],
             },
           ]),
       ),
@@ -98,7 +70,7 @@ export default function Slatejs() {
 
   const renderElement = useCallback((props) => {
     switch (props.element.type) {
-      case "code":
+      case 'code':
         return <CodeElement {...props} />;
       default:
         return <DefaultElement {...props} />;
@@ -114,14 +86,14 @@ export default function Slatejs() {
       return;
     }
     switch (event.key) {
-      case "`":
+      case '`':
         event.preventDefault();
-        CustomerEditor.toggleCodeBlock(editor);
+        slateCommand.toggleCodeBlock(editor);
         break;
-      case "b":
-        console.log("emmmmmm");
+      case 'b':
+        console.log('emmmmmm');
         event.preventDefault();
-        CustomerEditor.toggleBoldMark(editor);
+        slateCommand.toggleBoldMark(editor);
         break;
     }
   };
@@ -129,12 +101,12 @@ export default function Slatejs() {
   const resetNodes = (editor, { nodes, at }) => {
     const children = [...editor.children];
     children.forEach((node) => {
-      editor.apply({ type: "remove_node", path: [0], node });
+      editor.apply({ type: 'remove_node', path: [0], node });
     });
     if (nodes) {
       const nodes = Node.isNode(nodes) ? [nodes] : nodes;
       nodes.forEach((node, index) => {
-        editor.apply({ type: "insert_node", path: [index], node });
+        editor.apply({ type: 'insert_node', path: [index], node });
       });
     }
     const point = at && Point.isPoint(at) ? at : Editor.end(editor, []);
@@ -149,25 +121,25 @@ export default function Slatejs() {
       initialValue={initialValue}
       onChange={(value) => {
         const isAstChange = editor.operations.some(
-          (op) => "set_selection" !== op.type,
+          (op) => 'set_selection' !== op.type,
         );
         if (isAstChange) {
           const content = JSON.stringify(value);
-          localStorage.setItem("content", content);
-          localStorage.setItem("content-serialize", serialize(value));
+          localStorage.setItem('content', content);
+          localStorage.setItem('content-serialize', serialize(value));
         }
       }}
     >
       <Toolbar />
       <Editable
         style={{
-          padding: "20px",
-          border: "1px solid #ccc",
+          padding: '20px',
+          border: '1px solid #ccc',
           flex: 1,
-          backgroundColor: "#fff",
-          color: "#000",
-          borderRadius: "10px",
-          outline: "none",
+          backgroundColor: '#fff',
+          color: '#000',
+          borderRadius: '10px',
+          outline: 'none',
         }}
         renderElement={renderElement}
         renderLeaf={renderLeaf}
