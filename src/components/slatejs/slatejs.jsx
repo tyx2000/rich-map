@@ -1,81 +1,63 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { createEditor, Editor, Transforms, Element, Node, Point } from 'slate';
+import { useCallback, useMemo, useState } from 'react';
+import { createEditor, Editor, Transforms, Node, Point } from 'slate';
 import { Slate, withReact, Editable } from 'slate-react';
-import * as Y from 'yjs';
-import slateCommand from './slateCommand';
+import slateCommand from '../../../utils/slateCommand.js';
 
+import LeafElement from './components/leafElement.jsx';
 import Toolbar from './toolbar';
+import { serialize, deserialize } from '../../../utils/helper.js';
+import SlateElement from './components/index.jsx';
+import { withHistory } from 'slate-history';
+import withCustomerElement from '../../../utils/withCustomerElement.js';
 
-const CodeElement = (props) => {
-  return (
-    <pre
-      style={{ backgroundColor: 'red', color: '#fff' }}
-      {...props.attributes}
-    >
-      <code>{props.children}</code>
-    </pre>
-  );
-};
-const DefaultElement = (props) => {
-  return (
-    <pre {...props.attributes}>
-      <code>{props.children}</code>
-    </pre>
-  );
-};
-const LeafElement = (props) => {
-  return (
-    <span
-      {...props.attributes}
-      style={{ fontWeight: props.leaf.bold ? 'bold' : 'normal' }}
-    >
-      {props.children}
-    </span>
-  );
-};
-
-const serialize = (value) => {
-  return value.map((n) => Node.string(n)).join('\n');
-};
-
-const deserialize = (string) => {
-  return string.split('\n').map((line) => {
-    return {
-      children: [{ text: line }],
-    };
-  });
-};
+const initialValue = [
+  { type: 'paragraph', children: [{ text: 'below checklist' }] },
+  {
+    type: 'checklistItem',
+    checked: false,
+    children: [{ text: 'slide to left' }],
+  },
+  {
+    type: 'image',
+    url: 'https://i.imgur.com/VZewSe2.jpeg',
+    name: 'strange stone',
+    children: [{ text: '' }],
+  },
+  {
+    type: 'video',
+    url: 'https://player.vimeo.com/video/26689853',
+    // url: 'https://youtu.be/ekr2nIex040?si=fwU_-yF_SFG7Eye-',
+    children: [{ text: '' }],
+  },
+  // {
+  //   type: 'editableVoid',
+  //   children: [{ text: '' }],
+  // },
+];
 
 export default function Slatejs() {
-  const [editor] = useState(() => withReact(createEditor()));
-
-  useEffect(() => {
-    const yDoc = new Y.Doc();
-  }, []);
-
-  const initialValue = useMemo(
-    () =>
-      // deserialize(localStorage.getItem("content-serialize") || ""),
-      JSON.parse(
-        localStorage.getItem('content') ||
-          JSON.stringify([
-            {
-              type: 'paragraph',
-              children: [{ text: 'A line of text in a paragraph.' }],
-            },
-          ]),
-      ),
+  // const [editor] = useState(() => withReact(createEditor()));
+  const editor = useMemo(
+    () => withCustomerElement(withHistory(withReact(createEditor()))),
     [],
   );
 
-  const renderElement = useCallback((props) => {
-    switch (props.element.type) {
-      case 'code':
-        return <CodeElement {...props} />;
-      default:
-        return <DefaultElement {...props} />;
-    }
-  }, []);
+  // const initialValue = useMemo(
+  //   () =>
+  //     // deserialize(localStorage.getItem("content-serialize") || ""),
+  //     JSON.parse(
+  //       localStorage.getItem('content') ||
+  //         JSON.stringify([
+  //           {
+  //             type: 'paragraph',
+  //             children: [{ text: 'A line of text in a paragraph.' }],
+  //           },
+  //         ]),
+  //     ),
+  //   [],
+  // );
+
+  const renderElement = useCallback((props) => <SlateElement {...props} />, []);
 
   const renderLeaf = useCallback((props) => {
     return <LeafElement {...props} />;
@@ -141,9 +123,21 @@ export default function Slatejs() {
           borderRadius: '10px',
           outline: 'none',
         }}
+        spellCheck
+        autoFocus
         renderElement={renderElement}
         renderLeaf={renderLeaf}
         onKeyDown={handleEditorKeydown}
+        placeholder="emmmmmmmmmmmmmmmmm"
+        renderPlaceholder={({ children, attributes }) => (
+          <div {...attributes}>
+            {children}
+            <pre>
+              Use the renderPlaceholder prop to customize rendering of the
+              placeholder
+            </pre>
+          </div>
+        )}
       />
     </Slate>
   );

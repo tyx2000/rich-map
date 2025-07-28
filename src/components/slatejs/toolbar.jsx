@@ -2,6 +2,7 @@ import { useSlate } from 'slate-react';
 import styles from './toolbar.module.css';
 import { createPortal, Fragment } from 'react-dom';
 import { useEffect, useState } from 'react';
+import { insertImage, isImageUrl } from '../../../utils/helper';
 
 const tools = [
   {
@@ -78,9 +79,26 @@ export default function Toolbar() {
     }
   };
 
+  const handleAddImage = () => {
+    const url = window.prompt('Enter the url of the image:');
+    if (url && !isImageUrl(url)) {
+      alert('url is not a image');
+      return;
+    }
+    url && insertImage(editor, url);
+  };
+
   const handleItemOptionsAction = (child) => {
     console.log({ child });
     setToolItemName('');
+    switch (child.action) {
+      case 'addImage':
+        handleAddImage();
+        break;
+      default:
+        console.log(child.action);
+        break;
+    }
   };
 
   useEffect(() => {
