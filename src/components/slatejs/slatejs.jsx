@@ -11,6 +11,7 @@ import { withHistory } from 'slate-history';
 import withCustomerElement from '../../../utils/withCustomerElement.js';
 
 const initialValue = [
+  { type: 'title', children: [{ text: 'Enforce you layout' }] },
   { type: 'paragraph', children: [{ text: 'below checklist' }] },
   {
     type: 'checklistItem',
