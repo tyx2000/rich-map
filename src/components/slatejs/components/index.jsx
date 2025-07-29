@@ -6,7 +6,6 @@ import EditableVoidElement from './editableVoidElement';
 import VideoElement from './videoElement';
 
 export default function SlateElement(props) {
-  console.log('elementType', props.element.type);
   switch (props.element.type) {
     case 'title':
       return <h2 {...props.attributes}>{props.children}</h2>;

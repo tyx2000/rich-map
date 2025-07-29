@@ -1,10 +1,27 @@
-export default function LeafElement(props) {
+export default function LeafElement({ attributes, children, leaf }) {
+  if (leaf.bold) {
+    children = <strong>{children}</strong>;
+  }
+  if (leaf.italic) {
+    children = <em>{children}</em>;
+  }
+  if (leaf.underline) {
+    children = <u>{children}</u>;
+  }
+  if (leaf.del) {
+    children = <del>{children}</del>;
+  }
+
+  console.log(leaf);
+
   return (
     <span
-      {...props.attributes}
-      style={{ fontWeight: props.leaf.bold ? 'bold' : 'normal' }}
+      {...attributes}
+      {...(leaf.highlight && { 'data-cy': 'search-highlight' })}
+      style={{ backgroundColor: leaf.bgc || '' }}
+      // style={{backgroundColor: leaf.highlight && '#ffeeba'}}
     >
-      {props.children}
+      {children}
     </span>
   );
 }

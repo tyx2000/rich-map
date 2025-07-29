@@ -7,8 +7,6 @@ export default function ChecklistItemElement(props) {
   const editor = useSlateStatic();
   const readonly = useReadOnly();
 
-  console.log({ attributes, children, element });
-
   return (
     <div
       {...attributes}

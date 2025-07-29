@@ -88,30 +88,6 @@ export default function Toolbar() {
     url && insertImage(editor, url);
   };
 
-  const handleItemOptionsAction = (child) => {
-    console.log({ child });
-    setToolItemName('');
-    switch (child.action) {
-      case 'addImage':
-        handleAddImage();
-        break;
-      default:
-        console.log(child.action);
-        break;
-    }
-  };
-
-  useEffect(() => {
-    const clickHandler = () => {
-      console.log({ toolItemName });
-      // toolItemName && setToolItemName('');
-    };
-    document.addEventListener('click', clickHandler);
-    return () => {
-      document.removeEventListener('click', clickHandler);
-    };
-  }, [toolItemName]);
-
   return (
     <div className={styles.toolbar}>
       {tools.map((tool) => (
@@ -134,12 +110,7 @@ export default function Toolbar() {
               ].join(' ')}
             >
               {tool.children.map((child) => (
-                <div
-                  key={child.name}
-                  onClick={() => handleItemOptionsAction(child)}
-                >
-                  {child.name}
-                </div>
+                <div key={child.name}>{child.name}</div>
               ))}
             </div>
           )}
