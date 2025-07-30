@@ -117,7 +117,7 @@ export default function Slatejs() {
     }
   };
 
-  cosnt[(searchValue, setSearchValue)] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const decorate = useCallback(
     ([node, path]) => {
       const ranges = [];

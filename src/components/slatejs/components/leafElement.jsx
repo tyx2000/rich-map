@@ -12,13 +12,16 @@ export default function LeafElement({ attributes, children, leaf }) {
     children = <del>{children}</del>;
   }
 
-  console.log(leaf);
+  console.log('====>>>>>>>>>', leaf);
 
   return (
     <span
       {...attributes}
       {...(leaf.highlight && { 'data-cy': 'search-highlight' })}
-      style={{ backgroundColor: leaf.bgc || '' }}
+      style={{
+        backgroundColor: leaf.backgroundColor || '',
+        color: leaf.color || '',
+      }}
       // style={{backgroundColor: leaf.highlight && '#ffeeba'}}
     >
       {children}
