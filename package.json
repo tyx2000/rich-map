@@ -20,6 +20,7 @@
     "is-hotkey": "^0.2.0",
     "is-url": "^1.2.4",
     "leaflet": "^1.9.4",
+    "lucide-react": "^0.534.0",
     "prettier": "^3.6.2",
     "prosemirror-commands": "^1.7.0",
     "prosemirror-example-setup": "^1.2.3",

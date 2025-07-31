@@ -12,12 +12,13 @@ import { Slate, withReact, Editable } from 'slate-react';
 import slateCommand from '../../../utils/slateCommand.js';
 
 import LeafElement from './components/leafElement.jsx';
-import Toolbar from './toolbar';
+import Toolbar from '../toolbar/toolbar.jsx';
 import { serialize, deserialize } from '../../../utils/helper.js';
 import SlateElement from './components/index.jsx';
 import HoveringToolbar from './components/hoveringToolbar.jsx';
 import { withHistory } from 'slate-history';
 import withCustomerElement from '../../../utils/withCustomerElement.js';
+import styles from './slatejs.module.css';
 
 const initialValue = [
   { type: 'title', children: [{ text: 'Enforce you layout' }] },
@@ -182,36 +183,30 @@ export default function Slatejs() {
         }
       }}
     >
-      <Toolbar />
       <HoveringToolbar />
-      <Editable
-        style={{
-          padding: '20px',
-          border: '1px solid #ccc',
-          flex: 1,
-          backgroundColor: '#fff',
-          color: '#000',
-          borderRadius: '10px',
-          outline: 'none',
-        }}
-        spellCheck
-        autoFocus
-        decorate={decorate}
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-        onKeyDown={handleEditorKeydown}
-        // onDOMBeforeInput={onDOMBeforeInput}
-        placeholder="emmmmmmmmmmmmmmmmm"
-        renderPlaceholder={({ children, attributes }) => (
-          <div {...attributes}>
-            {children}
-            <pre>
-              Use the renderPlaceholder prop to customize rendering of the
-              placeholder
-            </pre>
-          </div>
-        )}
-      />
+      <Toolbar />
+      <div className={styles.editableWrapper}>
+        <Editable
+          className={styles.editable}
+          spellCheck
+          autoFocus
+          decorate={decorate}
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          onKeyDown={handleEditorKeydown}
+          // onDOMBeforeInput={onDOMBeforeInput}
+          placeholder="emmmmmmmmmmmmmmmmm"
+          renderPlaceholder={({ children, attributes }) => (
+            <div {...attributes}>
+              {children}
+              <pre>
+                Use the renderPlaceholder prop to customize rendering of the
+                placeholder
+              </pre>
+            </div>
+          )}
+        />
+      </div>
     </Slate>
   );
 }

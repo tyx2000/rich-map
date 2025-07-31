@@ -57,8 +57,8 @@ export default function HoveringToolbar() {
         {
           at: editor.selection,
           match: (n) => {
-            console.log('nnnnnn', n);
-            return Text.isText(n) && !n.backgroundColor;
+            // console.log('nnnnnn', n);
+            return Text.isText(n); // && !n.backgroundColor; 选中区包含已设置区则覆盖
           },
           split: true,
         },

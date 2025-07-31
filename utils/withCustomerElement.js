@@ -13,6 +13,11 @@ export default function withCustomerElement(editor) {
   editor.deleteBackward = (...args) => {
     const { selection } = editor;
     if (selection && Range.isCollapsed(selection)) {
+      // 删除遇到特定类型，删除整个节点
+      const [node, path] = Editor.node(editor, selection);
+      const [parentNode, parentPath] = Editor.parent(editor, path);
+      console.log({ node, path, parentNode, parentPath });
+
       const [match] = Editor.nodes(editor, {
         match: (n) =>
           !Editor.isEditor(n) &&
