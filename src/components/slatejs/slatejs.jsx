@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   createEditor,
   Editor,
@@ -172,6 +172,7 @@ export default function Slatejs() {
     <Slate
       editor={editor}
       initialValue={initialValue}
+      on
       onChange={(value) => {
         const isAstChange = editor.operations.some(
           (op) => 'set_selection' !== op.type,
@@ -183,9 +184,9 @@ export default function Slatejs() {
         }
       }}
     >
-      <HoveringToolbar />
       <Toolbar />
-      <div className={styles.editableWrapper}>
+      <HoveringToolbar />
+      <div className={styles.editableWrapper} contentEditable={false}>
         <Editable
           className={styles.editable}
           spellCheck

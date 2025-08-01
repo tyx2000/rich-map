@@ -1,57 +1,51 @@
 import styles from './toolButton.module.css';
-import {
-  Undo2,
-  Redo2,
-  Bold,
-  Italic,
-  Underline,
-  Strikethrough,
-  Code,
-  Baseline,
-  Highlighter,
-  AlignLeft,
-  List,
-  ListChecks,
-  Link,
-  Image,
-  Table,
-  Film,
-  File,
-  AudioLines,
-  MessageSquareText,
-} from 'lucide-react';
 import Header from './components/header';
+import { useSlate } from 'slate-react';
+import { Range } from 'slate';
+import slateCommand from '../../../utils/slateCommand';
 
-const toolMap = {
-  divider: <div className={styles.divider}></div>,
-  undo: <Undo2 size={16} />,
-  redo: <Redo2 size={16} />,
-  header: <Header size={16} />,
-  fontSize: 'fs',
-  bold: <Bold size={16} />,
-  italic: <Italic size={16} />,
-  underline: <Underline size={16} />,
-  strikethrough: <Strikethrough size={16} />,
-  code: <Code size={16} />,
-  color: <Baseline size={16} />,
-  highlight: <Highlighter size={16} />,
-  align: <AlignLeft size={16} />,
-  list: <List size={16} />,
-  checklist: <ListChecks size={16} />,
-  link: <Link size={16} />,
-  image: <Image size={16} />,
-  table: <Table size={16} />,
-  video: <Film size={16} />,
-  audio: <AudioLines size={16} />,
-  file: <File size={16} />,
-  comment: <MessageSquareText size={16} />,
+const optionsMap = {
+  header: <Header />,
 };
 
-export default function ToolButton({ name }) {
+export default function ToolButton({ children, toolName }) {
+  const editor = useSlate();
+
+  const withOptions = [
+    'header',
+    'fontSize',
+    'color',
+    'highlight',
+    'align',
+    'list',
+    'link',
+    'image',
+    'table',
+    'video',
+    'audio',
+    'file',
+  ].includes(toolName);
+
+  const handleToolItemClick = () => {
+    if (withOptions) return;
+    if (['bold', 'italic', 'underline', 'strikethrough'].includes(toolName)) {
+      console.log({ toolName });
+      if (editor.selection && !Range.isCollapsed(editor.selection)) {
+        slateCommand.toggleMark(editor, toolName);
+      }
+      return;
+    }
+  };
+
+  // todo click outside of the editor but not lose the selection or focus
+
   return (
-    <div className={styles.toolButton}>
-      {toolMap[name] || name}
-      <div className={styles.popover}>{name}</div>
+    <div className={styles.toolButton} onClick={handleToolItemClick}>
+      {children}
+      {withOptions && (
+        <div className={styles.options}>{optionsMap[toolName]}</div>
+      )}
+      {/* <div className={styles.popover}>{toolName}</div> */}
     </div>
   );
 }

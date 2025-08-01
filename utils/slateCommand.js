@@ -105,7 +105,7 @@ const slateCommand = {
     if (isActive) {
       Editor.removeMark(editor, format);
     } else {
-      Editor.addMark(editor, format, format === 'bgc' ? 'yellow' : true);
+      Editor.addMark(editor, format, true);
     }
   },
 };

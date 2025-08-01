@@ -54,3 +54,9 @@
     }
   }
 }
+
+.divider {
+  width: 1.5px;
+  height: 20px;
+  background-color: #e5e5e5;
+}

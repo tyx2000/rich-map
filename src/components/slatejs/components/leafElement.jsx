@@ -8,8 +8,24 @@ export default function LeafElement({ attributes, children, leaf }) {
   if (leaf.underline) {
     children = <u>{children}</u>;
   }
-  if (leaf.del) {
+  if (leaf.strikethrough) {
     children = <del>{children}</del>;
+  }
+
+  if (leaf.h1) {
+    children = <h1>{children}</h1>;
+  }
+  if (leaf.h2) {
+    children = <h2>{children}</h2>;
+  }
+  if (leaf.h3) {
+    children = <h3>{children}</h3>;
+  }
+  if (leaf.h4) {
+    children = <h4>{children}</h4>;
+  }
+  if (leaf.h5) {
+    children = <h5>{children}</h5>;
   }
 
   console.log('====>>>>>>>>>', leaf);
