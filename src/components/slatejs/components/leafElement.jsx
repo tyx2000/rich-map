@@ -28,7 +28,7 @@ export default function LeafElement({ attributes, children, leaf }) {
     children = <h5>{children}</h5>;
   }
 
-  console.log('====>>>>>>>>>', leaf);
+  console.log('>>', leaf);
 
   return (
     <span

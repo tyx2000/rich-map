@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   createEditor,
   Editor,
@@ -7,6 +7,7 @@ import {
   Point,
   Element,
   Text,
+  Range,
 } from 'slate';
 import { Slate, withReact, Editable } from 'slate-react';
 import slateCommand from '../../../utils/slateCommand.js';
@@ -172,7 +173,6 @@ export default function Slatejs() {
     <Slate
       editor={editor}
       initialValue={initialValue}
-      on
       onChange={(value) => {
         const isAstChange = editor.operations.some(
           (op) => 'set_selection' !== op.type,

@@ -9,6 +9,7 @@
 }
 
 .editable {
+  height: 100%;
   border: 1px dashed red;
   outline: none;
   overflow: hidden auto;

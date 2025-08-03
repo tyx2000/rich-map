@@ -24,6 +24,8 @@ import {
   Heading,
 } from 'lucide-react';
 import ToolButton from './toolButton';
+import { createPortal } from 'react-dom';
+import { useState } from 'react';
 
 const toolMap = {
   undo: <Undo2 size={16} />,
@@ -56,10 +58,23 @@ const toolMap = {
 export default function Toolbar() {
   const editor = useSlate();
 
+  const [selectedToolName, setSelectedToolName] = useState('');
+
   return (
-    <div className={styles.toolbar}>
+    <div
+      className={styles.toolbar}
+      onMouseDown={(e) => {
+        // keep focus or selection in the editable
+        e.preventDefault();
+      }}
+    >
       {Object.keys(toolMap).map((toolName, index) => (
-        <ToolButton key={toolName + index} toolName={toolName}>
+        <ToolButton
+          key={toolName + index}
+          toolName={toolName}
+          selectedToolName={selectedToolName}
+          setSelectedToolName={(val) => setSelectedToolName(val)}
+        >
           {toolMap[toolName] || toolName}
         </ToolButton>
       ))}

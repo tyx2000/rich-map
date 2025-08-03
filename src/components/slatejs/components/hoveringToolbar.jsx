@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Editor, Range, Text, Transforms } from 'slate';
 import { useFocused, useSlate } from 'slate-react';
 import slateCommand from '../../../../utils/slateCommand';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 function Portal({ children }) {
   return typeof document === 'object'
@@ -14,6 +15,17 @@ export default function HoveringToolbar() {
   const ref = useRef(null);
   const editor = useSlate();
   const focused = useFocused();
+
+  useClickOutside(ref, () => {
+    console.log('outside');
+
+    if (ref.current && !editor.selection) {
+      const el = ref.current;
+      el.style.opacity = '0';
+      el.style.top = '-10000px';
+      el.style.left = '-10000px';
+    }
+  });
 
   useEffect(() => {
     const el = ref.current;
@@ -29,8 +41,8 @@ export default function HoveringToolbar() {
     ) {
       // el.removeAttribute('style');
       el.style.opacity = '0';
-      el.style.top = -10000;
-      el.style.left = -10000;
+      el.style.top = '-10000px';
+      el.style.left = '-10000px';
       return;
     }
     const domSelection = window.getSelection();
@@ -39,6 +51,7 @@ export default function HoveringToolbar() {
     el.style.opacity = '1';
     el.style.top = `${offset.top + window.pageYOffset - el.offsetHeight}px`;
     el.style.left = `${offset.left + window.pageXOffset - el.offsetWidth / 2 + offset.width / 2}px`;
+    console.log(el.style);
   });
 
   const handleFontMark = (format, color) => {
@@ -82,6 +95,11 @@ export default function HoveringToolbar() {
           borderRadius: 4,
           transition: 'opacity 0.2s',
         }}
+        // =========================================
+        onMouseDown={(e) => {
+          e.preventDefault();
+        }}
+        // =========================================
       >
         {['bold', 'italic', 'del', 'underline', 'bgc'].map((item) =>
           item === 'bgc' ? (

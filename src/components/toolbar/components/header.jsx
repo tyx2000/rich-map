@@ -1,48 +1,41 @@
 import { Fragment } from 'react';
 import styles from '../toolButton.module.css';
-import { useSlate } from 'slate-react';
-import { Range } from 'slate';
-import slateCommand from '../../../../utils/slateCommand';
 
-export default function Header() {
-  const editor = useSlate();
-  const handleHeaderOptionClick = (header) => {
-    if (editor.selection && !Range.isCollapsed(editor.selection)) {
-      slateCommand.toggleMark(editor, header);
-    }
-  };
+const headers = [
+  {
+    value: 'h1',
+    el: <h1>h1</h1>,
+  },
+  {
+    value: 'h2',
+    el: <h2>h2</h2>,
+  },
+  {
+    value: 'h3',
+    el: <h3>h3</h3>,
+  },
+  {
+    value: 'h4',
+    el: <h4>h4</h4>,
+  },
+  {
+    value: 'h5',
+    el: <h5>h5</h5>,
+  },
+];
+
+export default function Header({ onSetFormat }) {
   return (
     <Fragment>
-      <div
-        className={styles.optionsItem}
-        onClick={() => handleHeaderOptionClick('h1')}
-      >
-        <h1>h1</h1>
-      </div>
-      <div
-        className={styles.optionsItem}
-        onClick={() => handleHeaderOptionClick('h2')}
-      >
-        <h2>h2</h2>
-      </div>
-      <div
-        className={styles.optionsItem}
-        onClick={() => handleHeaderOptionClick('h3')}
-      >
-        <h3>h3</h3>
-      </div>
-      <div
-        className={styles.optionsItem}
-        onClick={() => handleHeaderOptionClick('h4')}
-      >
-        <h4>h4</h4>
-      </div>
-      <div
-        className={styles.optionsItem}
-        onClick={() => handleHeaderOptionClick('h5')}
-      >
-        <h5>h5</h5>
-      </div>
+      {headers.map((header) => (
+        <div
+          key={header.value}
+          className={styles.optionsItem}
+          onClick={() => onSetFormat('header', header.value)}
+        >
+          {header.el}
+        </div>
+      ))}
     </Fragment>
   );
 }
