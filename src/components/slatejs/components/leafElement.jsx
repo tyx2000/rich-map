@@ -35,7 +35,7 @@ export default function LeafElement({ attributes, children, leaf }) {
       {...attributes}
       {...(leaf.highlight && { 'data-cy': 'search-highlight' })}
       style={{
-        backgroundColor: leaf.backgroundColor || '',
+        backgroundColor: leaf.highlight || '',
         color: leaf.color || '',
       }}
       // style={{backgroundColor: leaf.highlight && '#ffeeba'}}

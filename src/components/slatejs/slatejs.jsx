@@ -90,18 +90,6 @@ export default function Slatejs() {
     }
   };
 
-  const onDOMBeforeInput = (event) => {
-    console.log('onDOMBeforeInput', event);
-    switch (event.inputType) {
-      case 'bold':
-        slateCommand.toggleMark(editor, 'bold');
-        break;
-      default:
-        console.log('unknown inputType', event.inputType);
-        break;
-    }
-  };
-
   const resetNodes = (editor, { nodes, at }) => {
     const children = [...editor.children];
     children.forEach((node) => {
@@ -185,7 +173,7 @@ export default function Slatejs() {
       }}
     >
       <Toolbar />
-      <HoveringToolbar />
+      {/* <HoveringToolbar /> */}
       <div className={styles.editableWrapper} contentEditable={false}>
         <Editable
           className={styles.editable}
@@ -195,7 +183,6 @@ export default function Slatejs() {
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           onKeyDown={handleEditorKeydown}
-          // onDOMBeforeInput={onDOMBeforeInput}
           placeholder="emmmmmmmmmmmmmmmmm"
           renderPlaceholder={({ children, attributes }) => (
             <div {...attributes}>

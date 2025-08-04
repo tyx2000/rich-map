@@ -17,7 +17,7 @@ export default function HoveringToolbar() {
   const focused = useFocused();
 
   useClickOutside(ref, () => {
-    console.log('outside');
+    console.log('outside', ref.current, editor.selection);
 
     if (ref.current && !editor.selection) {
       const el = ref.current;

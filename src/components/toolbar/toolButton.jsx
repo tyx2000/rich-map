@@ -1,17 +1,26 @@
 import styles from './toolButton.module.css';
 import Header from './components/header';
 import { useSlate } from 'slate-react';
-import { Range } from 'slate';
+import { Editor, Range, Transforms } from 'slate';
 import slateCommand from '../../../utils/slateCommand';
 import { useRef } from 'react';
 import useClickOutside from '../../hooks/useClickOutside';
+import ColorPicker from './components/colorPicker';
+import AlignItems from './components/alignItems';
 
 const renderOptions = (toolName, onSetFormat) => {
   const optionsMap = {
     header: <Header onSetFormat={onSetFormat} />,
+    color: (
+      <ColorPicker onSetFormat={(color) => onSetFormat(toolName, color)} />
+    ),
+    highlight: (
+      <ColorPicker onSetFormat={(color) => onSetFormat(toolName, color)} />
+    ),
+    align: <AlignItems onSetFormat={onSetFormat} />,
   };
 
-  return optionsMap[toolName] || toolName;
+  return optionsMap[toolName] || '';
 };
 
 export default function ToolButton({
@@ -56,15 +65,46 @@ export default function ToolButton({
 
   const onSetFormat = (toolName, value) => {
     console.log({ toolName, value });
-    setSelectedToolName('');
-    if (['header', 'fontStyle'].includes(toolName)) {
+    setTimeout(() => {
+      setSelectedToolName('');
+    }, 30);
+    if (['header', 'fontStyle', 'color', 'highlight'].includes(toolName)) {
       if (editor.selection && !Range.isCollapsed(editor.selection)) {
-        slateCommand.toggleMark(editor, value);
+        slateCommand.toggleMark(editor, toolName, value);
       }
+    }
+    if (toolName === 'align') {
+      if (!editor.selection) return;
+      console.log(editor.selection);
+
+      let targetNodes;
+      if (Range.isCollapsed(editor.selection)) {
+        const [node] = Editor.nodes(editor, {
+          mode: 'highest',
+        });
+        targetNodes = node ? [node] : [];
+      } else {
+        targetNodes = Array.from(
+          Editor.nodes(editor, {
+            match: (n) => ['paragraph', 'image'].includes(n.type),
+            mode: 'highest',
+          }),
+        );
+      }
+      targetNodes.forEach(([node, path]) => {
+        Transforms.setNodes(
+          editor,
+          {
+            align: value,
+          },
+          { at: path },
+        );
+      });
     }
   };
 
   // todo click outside of the editor but not lose the selection or focus
+  // just e.preventDefault() :)
 
   return (
     <div className={styles.toolButton} onClick={handleToolItemClick}>

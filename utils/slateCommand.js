@@ -98,14 +98,13 @@ const slateCommand = {
       { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) },
     );
   },
-  toggleMark(editor, format) {
+  toggleMark(editor, formatLabel, formatValue) {
     const marks = Editor.marks(editor);
-    const isActive = marks ? !!marks[format] : false;
-    console.log({ marks });
+    const isActive = marks ? marks[formatLabel] === formatValue : false;
     if (isActive) {
       Editor.removeMark(editor, format);
     } else {
-      Editor.addMark(editor, format, true);
+      Editor.addMark(editor, formatLabel, formatValue);
     }
   },
 };
