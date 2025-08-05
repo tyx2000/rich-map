@@ -7,6 +7,9 @@ import { useRef } from 'react';
 import useClickOutside from '../../hooks/useClickOutside';
 import ColorPicker from './components/colorPicker';
 import AlignItems from './components/alignItems';
+import ListPrefixType from './components/listPrefixType';
+import InsertFile from './components/insertFile';
+import TableSize from './components/tableSize';
 
 const renderOptions = (toolName, onSetFormat) => {
   const optionsMap = {
@@ -18,6 +21,11 @@ const renderOptions = (toolName, onSetFormat) => {
       <ColorPicker onSetFormat={(color) => onSetFormat(toolName, color)} />
     ),
     align: <AlignItems onSetFormat={onSetFormat} />,
+    table: <TableSize onSetFormat={(index) => onSetFormat('table', index)} />,
+    list: <ListPrefixType onAddList={(type) => onSetFormat(toolName, type)} />,
+    image: <InsertFile fileType={toolName} onConfirm={onSetFormat} />,
+    audio: <InsertFile fileType={toolName} onConfirm={onSetFormat} />,
+    video: <InsertFile fileType={toolName} onConfirm={onSetFormat} />,
   };
 
   return optionsMap[toolName] || '';
@@ -60,6 +68,18 @@ export default function ToolButton({
       if (['bold', 'italic', 'underline', 'strikethrough'].includes(toolName)) {
         onSetFormat('fontStyle', toolName);
       }
+      if (toolName === 'checklist') {
+        Transforms.insertNodes(
+          editor,
+          {
+            type: 'checklistItem',
+            children: [{ text: '' }],
+          },
+          {
+            at: editor.selection.path,
+          },
+        );
+      }
     }
   };
 
@@ -75,31 +95,44 @@ export default function ToolButton({
     }
     if (toolName === 'align') {
       if (!editor.selection) return;
-      console.log(editor.selection);
 
-      let targetNodes;
-      if (Range.isCollapsed(editor.selection)) {
-        const [node] = Editor.nodes(editor, {
-          mode: 'highest',
-        });
-        targetNodes = node ? [node] : [];
-      } else {
-        targetNodes = Array.from(
-          Editor.nodes(editor, {
-            match: (n) => ['paragraph', 'image'].includes(n.type),
-            mode: 'highest',
-          }),
-        );
-      }
-      targetNodes.forEach(([node, path]) => {
-        Transforms.setNodes(
-          editor,
-          {
-            align: value,
-          },
-          { at: path },
-        );
-      });
+      Transforms.setNodes(
+        editor,
+        { align: value },
+        { at: editor.selection.path },
+      );
+    }
+
+    if (toolName === 'list') {
+      if (!editor.selection) return;
+      Transforms.insertNodes(
+        editor,
+        {
+          type: 'listItem',
+          prefix: value,
+          children: [{ text: '' }],
+        },
+        { at: editor.selection.path },
+      );
+    }
+
+    if (['image', 'audio', 'video'].includes(toolName)) {
+      Transforms.insertNodes(
+        editor,
+        {
+          type: toolName,
+          url: value,
+          name: 'media source',
+          children: [{ text: '' }],
+        },
+        {
+          at: editor.selection.path, // || Editor.end(),
+        },
+      );
+    }
+
+    if (toolName === 'table') {
+      console.log('row column', value, Math.ceil(value / 8), (value % 8) + 1);
     }
   };
 

@@ -7,10 +7,18 @@ export default function ChecklistItemElement(props) {
   const editor = useSlateStatic();
   const readonly = useReadOnly();
 
+  const alignDirection =
+    { left: 'flex-start', center: 'center', right: 'flex-right' }[
+      element.align
+    ] || 'flex-start';
+
   return (
     <div
       {...attributes}
-      style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      style={{
+        display: 'flex',
+        justifyContent: alignDirection,
+      }}
     >
       <span contentEditable={false} style={{ marginRight: 5 }}>
         <input
@@ -30,7 +38,6 @@ export default function ChecklistItemElement(props) {
         contentEditable={!readonly}
         suppressContentEditableWarning
         style={{
-          flex: 1,
           color: checked ? 'red' : 'green',
           opacity: checked ? 0.6 : 1,
           textDecoration: checked ? 'line-through' : 'none',

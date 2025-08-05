@@ -21,6 +21,7 @@ import { withHistory } from 'slate-history';
 import withCustomerElement from '../../../utils/withCustomerElement.js';
 import styles from './slatejs.module.css';
 
+// 每个对象即是element属性
 const initialValue = [
   { type: 'title', children: [{ text: 'Enforce you layout' }] },
   { type: 'paragraph', children: [{ text: 'below checklist' }] },

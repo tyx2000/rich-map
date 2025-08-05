@@ -20,7 +20,7 @@ export default function withChecklists(editor) {
             editor,
             { type: 'paragraph' },
             {
-              mathch: (n) =>
+              match: (n) =>
                 !Editor.isEditor(n) &&
                 Element.isElement(n) &&
                 n.type === 'checklistItem',

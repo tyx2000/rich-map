@@ -2,7 +2,8 @@ import { Editor, Element, Point, Range, Transforms } from 'slate';
 import { insertImage, isImageUrl } from './helper';
 
 export default function withCustomerElement(editor) {
-  const { deleteBackward, insertData, isVoid, normalizeNode } = editor;
+  const { deleteBackward, insertData, isVoid, normalizeNode, insertBreak } =
+    editor;
 
   editor.isVoid = (element) => {
     return ['image', 'editableVoid', 'video'].includes(element.type)
@@ -22,7 +23,7 @@ export default function withCustomerElement(editor) {
         match: (n) =>
           !Editor.isEditor(n) &&
           Element.isElement(n) &&
-          n.type === 'checklistItem',
+          ['checklistItem', 'listItem'].includes(n.type),
       });
       if (match) {
         const [, path] = match;
@@ -35,7 +36,7 @@ export default function withCustomerElement(editor) {
               match: (n) =>
                 !Editor.isEditor(n) &&
                 Element.isElement(n) &&
-                n.type === 'checklistItem',
+                ['checklistItem', 'listItem'].includes(n.type),
             },
           );
           return;
@@ -105,6 +106,16 @@ export default function withCustomerElement(editor) {
   //   }
   //   return normalizeNode([node, path]);
   // };
+
+  editor.insertBreak = (...args) => {
+    const [nodes] = Editor.nodes(editor, {
+      match: (n) =>
+        !Editor.isEditor(n) && Element.isElement(n) && n.type === 'listItem',
+    });
+    console.log({ nodes });
+
+    insertBreak(...args);
+  };
 
   return editor;
 }

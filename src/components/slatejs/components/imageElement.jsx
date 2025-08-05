@@ -12,11 +12,24 @@ export default function ImageElement(props) {
   const path = ReactEditor.findPath(editor, element);
   const selected = useSelected();
   const focused = useFocused();
+
+  const alignDirection =
+    { left: 'flex-start', center: 'center', right: 'flex-end' }[
+      element.align
+    ] || 'flex-start';
+
   return (
     <div {...attributes}>
       {children}
 
-      <div contentEditable={false} style={{ position: 'relative' }}>
+      <div
+        contentEditable={false}
+        style={{
+          position: 'relative',
+          display: 'flex',
+          justifyContent: alignDirection,
+        }}
+      >
         <img
           src={element.url}
           alt={element.name}
