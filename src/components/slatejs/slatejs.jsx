@@ -1,6 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  createEditor,
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  createEditor as creaetSlateEditor,
   Editor,
   Transforms,
   Node,
@@ -20,6 +27,9 @@ import HoveringToolbar from './components/hoveringToolbar.jsx';
 import { withHistory } from 'slate-history';
 import withCustomerElement from '../../../utils/withCustomerElement.js';
 import styles from './slatejs.module.css';
+import { faker, tr } from '@faker-js/faker';
+import Chunk from './components/chunk.jsx';
+import PerformanceControls from '../performanceControls/index.jsx';
 
 // 每个对象即是element属性
 const initialValue = [
@@ -46,14 +56,168 @@ const initialValue = [
   //   type: 'editableVoid',
   //   children: [{ text: '' }],
   // },
+  {
+    type: 'table',
+    children: [
+      {
+        type: 'table-row',
+        children: [
+          {
+            type: 'table-cell',
+            children: [{ text: '1', bold: true }],
+          },
+          {
+            type: 'table-cell',
+            children: [{ text: '2', underline: true }],
+          },
+          {
+            type: 'table-cell',
+            children: [{ text: '3', strikethrough: true }],
+          },
+          {
+            type: 'table-cell',
+            children: [{ text: '4', italic: true }],
+          },
+          {
+            type: 'table-cell',
+            children: [{ text: '5', bold: true, italic: true }],
+          },
+        ],
+      },
+      {
+        type: 'table-row',
+        children: [
+          {
+            type: 'table-cell',
+            children: [{ text: 'cccccccccc' }],
+          },
+          {
+            type: 'table-cell',
+            children: [{ text: 'cccccccccc' }],
+          },
+          {
+            type: 'table-cell',
+            children: [{ text: 'cccccccccc' }],
+          },
+          {
+            type: 'table-cell',
+            children: [{ text: 'cccccccccc' }],
+          },
+          {
+            type: 'table-cell',
+            children: [{ text: 'cccccccccc' }],
+          },
+        ],
+      },
+    ],
+  },
 ];
+
+const searchParams =
+  typeof document === 'undefined'
+    ? null
+    : new URLSearchParams(document.location.search);
+const parseNumber = (key, defaultValue) =>
+  parseInt(searchParams?.get(key) ?? '', 10) || defaultValue;
+const parseBoolean = (key, defaultValue) => {
+  const value = searchParams?.get(key);
+  if (value) return value === 'true';
+  return defaultValue;
+};
+const parseEnum = (key, options, defaultValue) => {
+  const value = searchParams?.get(key);
+  if (value && options.includes(value)) return value;
+  return defaultValue;
+};
+
+const initialConfig = {
+  blocks: parseNumber('blocks', 10000),
+  chunking: parseBoolean('chunking', true),
+  chunkSize: parseNumber('chunk_size', 1000),
+  chunkDivs: parseBoolean('chunk_divs', true),
+  chunkOutlines: parseBoolean('chunk_outlines', false),
+  contentVisibilityMode: parseEnum(
+    'content_visibility',
+    ['none', 'element', 'chunk'],
+    'chunk',
+  ),
+  showSelectedHeadings: parseBoolean('selected_headings', false),
+};
+const setSearchParams = (config) => {
+  if (searchParams) {
+    searchParams.set('blocks', config.blocks.toString());
+    searchParams.set('chunking', config.chunking ? 'true' : 'false');
+    searchParams.set('chunk_size', config.chunkSize.toString());
+    searchParams.set('chunk_divs', config.chunkDivs ? 'true' : 'false');
+    searchParams.set('chunk_outlines', config.chunkOutlines ? 'true' : 'false');
+    searchParams.set('content_visibility', config.contentVisibilityMode);
+    searchParams.set(
+      'selected_headings',
+      config.showSelectedHeadings ? 'true' : 'false',
+    );
+    history.replaceState({}, '', `?${searchParams.toString()}`);
+  }
+};
+const cachedinitialValue = [];
+const getInitialValue = (blocks) => {
+  if (cachedinitialValue.length >= blocks) {
+    return cachedinitialValue.slice(0, blocks);
+  }
+  faker.seed(1);
+  for (let i = cachedinitialValue.length; i < blocks; i++) {
+    if (i % 100 === 0) {
+      const heading = {
+        type: 'heading-one',
+        children: [{ text: faker.lorem.sentence() }],
+      };
+      cachedinitialValue.push(heading);
+    } else {
+      const paragraph = {
+        type: 'paragraph',
+        children: [{ text: faker.lorem.paragraph() }],
+      };
+      cachedinitialValue.push(paragraph);
+    }
+  }
+  return cachedinitialValue.slice();
+};
+const initialInitialValue =
+  typeof window === 'undefined' ? [] : getInitialValue(initialConfig.blocks);
+const createEditor = (config) => {
+  const editor = withCustomerElement(
+    withHistory(withReact(creaetSlateEditor())),
+  );
+  editor.getChunkSize = (node) =>
+    config.chunking && Editor.isEditor(node) ? config.chunkSize : null;
+  return editor;
+};
 
 export default function Slatejs() {
   // const [editor] = useState(() => withReact(createEditor()));
-  const editor = useMemo(
-    () => withCustomerElement(withHistory(withReact(createEditor()))),
-    [],
-  );
+  // const editor = useMemo(() => {
+  //   const editor = withCustomerElement(withHistory(withReact(createEditor())));
+  //   editor.getChunkSize = (node) =>
+  //     config.chunking && Editor.isEditor(node) ? config.chunkSize : null;
+  //   return editor;
+  // }, []);
+
+  const [rendering, setRendering] = useState(false);
+  const [config, baseSetConfig] = useState(initialConfig);
+  const [initialValue, setInitialValue] = useState(initialInitialValue);
+  const [editor, setEditor] = useState(() => createEditor(config));
+  const [editorVersion, setEditorVersion] = useState(0);
+  const setConfig = useCallback((partialConfig) => {
+    const newConfig = { ...config, ...partialConfig };
+    setRendering(tr);
+    baseSetConfig(newConfig);
+    setSearchParams(newConfig);
+    setTimeout(() => {
+      setRendering(false);
+      setInitialValue(getInitialValue(newConfig.blocks));
+      setEditor(createEditor(newConfig));
+      setEditorVersion((n) => n + 1);
+    });
+  });
 
   // const initialValue = useMemo(
   //   () =>
@@ -70,7 +234,27 @@ export default function Slatejs() {
   //   [],
   // );
 
-  const renderElement = useCallback((props) => <SlateElement {...props} />, []);
+  const renderElement = useCallback(
+    (props) => (
+      <SlateElement
+        {...props}
+        contentVisibility={config.contentVisibilityMode === 'element'}
+        showSelectedHeadings={config.showSelectedHeadings}
+      />
+    ),
+    [],
+  );
+
+  const renderChunk = useCallback(
+    (props) => (
+      <Chunk
+        {...props}
+        contentVisibilityLowest={config.contentVisibilityMode === 'chunk'}
+        outline={config.chunkOutlines}
+      />
+    ),
+    [config.contentVisibilityMode, config.chunkOutlines],
+  );
 
   const renderLeaf = useCallback((props) => <LeafElement {...props} />, []);
 
@@ -159,43 +343,57 @@ export default function Slatejs() {
   );
 
   return (
-    <Slate
-      editor={editor}
-      initialValue={initialValue}
-      onChange={(value) => {
-        const isAstChange = editor.operations.some(
-          (op) => 'set_selection' !== op.type,
-        );
-        if (isAstChange) {
-          const content = JSON.stringify(value);
-          localStorage.setItem('content', content);
-          localStorage.setItem('content-serialize', serialize(value));
-        }
-      }}
-    >
-      <Toolbar />
-      {/* <HoveringToolbar /> */}
-      <div className={styles.editableWrapper} contentEditable={false}>
-        <Editable
-          className={styles.editable}
-          spellCheck
-          autoFocus
-          decorate={decorate}
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          onKeyDown={handleEditorKeydown}
-          placeholder="emmmmmmmmmmmmmmmmm"
-          renderPlaceholder={({ children, attributes }) => (
-            <div {...attributes}>
-              {children}
-              <pre>
-                Use the renderPlaceholder prop to customize rendering of the
-                placeholder
-              </pre>
-            </div>
-          )}
-        />
-      </div>
-    </Slate>
+    <Fragment>
+      <PerformanceControls
+        editor={editor}
+        config={config}
+        setConfig={setConfig}
+      />
+
+      {rendering ? (
+        <div>Rendering&hellip;</div>
+      ) : (
+        <Slate
+          key={editorVersion}
+          editor={editor}
+          initialValue={initialValue}
+          onChange={(value) => {
+            const isAstChange = editor.operations.some(
+              (op) => 'set_selection' !== op.type,
+            );
+            if (isAstChange) {
+              const content = JSON.stringify(value);
+              localStorage.setItem('content', content);
+              localStorage.setItem('content-serialize', serialize(value));
+            }
+          }}
+        >
+          <Toolbar />
+          {/* <HoveringToolbar /> */}
+          <div className={styles.editableWrapper} contentEditable={false}>
+            <Editable
+              className={styles.editable}
+              spellCheck
+              autoFocus
+              decorate={decorate}
+              renderElement={renderElement}
+              renderChunk={config.chunkDivs ? renderChunk : undefined}
+              renderLeaf={renderLeaf}
+              onKeyDown={handleEditorKeydown}
+              placeholder="emmmmmmmmmmmmmmmmm"
+              renderPlaceholder={({ children, attributes }) => (
+                <div {...attributes}>
+                  {children}
+                  <pre>
+                    Use the renderPlaceholder prop to customize rendering of the
+                    placeholder
+                  </pre>
+                </div>
+              )}
+            />
+          </div>
+        </Slate>
+      )}
+    </Fragment>
   );
 }

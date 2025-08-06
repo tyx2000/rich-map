@@ -2,8 +2,14 @@ import { Editor, Element, Point, Range, Transforms } from 'slate';
 import { insertImage, isImageUrl } from './helper';
 
 export default function withCustomerElement(editor) {
-  const { deleteBackward, insertData, isVoid, normalizeNode, insertBreak } =
-    editor;
+  const {
+    deleteBackward,
+    deleteForward,
+    insertData,
+    isVoid,
+    normalizeNode,
+    insertBreak,
+  } = editor;
 
   editor.isVoid = (element) => {
     return ['image', 'editableVoid', 'video'].includes(element.type)
@@ -42,8 +48,42 @@ export default function withCustomerElement(editor) {
           return;
         }
       }
+
+      const [matchedTableCell] = Editor.nodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          Element.isElement(n) &&
+          n.type === 'table-cell',
+      });
+      if (matchedTableCell) {
+        const [, cellPath] = matchedTableCell;
+        const start = Editor.start(editor, cellPath);
+        if (Point.equals(selection.anchor, start)) {
+          return;
+        }
+      }
     }
     deleteBackward(...args);
+  };
+
+  editor.deleteForward = (...args) => {
+    const { selection } = editor;
+    if (selection && Range.isCollapsed(selection)) {
+      const [matchedTableCell] = Editor.nodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          Element.isElement(n) &&
+          n.type === 'table-cell',
+      });
+      if (matchedTableCell) {
+        const [, cellPath] = cell;
+        const end = Editor.end(editor, cellPath);
+        if (Point.equals(selection.anchor, end)) {
+          return;
+        }
+      }
+    }
+    deleteForward(...args);
   };
 
   editor.insertData = (data) => {
@@ -113,6 +153,17 @@ export default function withCustomerElement(editor) {
         !Editor.isEditor(n) && Element.isElement(n) && n.type === 'listItem',
     });
     console.log({ nodes });
+
+    const { selection } = editor;
+    if (selection) {
+      const [table] = Editor.nodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) & Element.isElement(n) && n.type === 'table',
+      });
+      if (table) {
+        return;
+      }
+    }
 
     insertBreak(...args);
   };
