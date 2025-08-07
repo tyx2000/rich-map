@@ -93,8 +93,8 @@ export default function PerformanceControls({ editor, config, setConfig }) {
         </label>
       </p>
       <details
-        open={configurationopen}
-        onToggle={(event) => setConfigurationOpen(event.currentTarget.open)}
+      // open={configurationopen}
+      // onToggle={(event) => setConfigurationOpen(event.currentTarget.open)}
       >
         <summary>Configuration</summary>
         <p>

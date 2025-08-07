@@ -26,6 +26,7 @@ const renderOptions = (toolName, onSetFormat) => {
     image: <InsertFile fileType={toolName} onConfirm={onSetFormat} />,
     audio: <InsertFile fileType={toolName} onConfirm={onSetFormat} />,
     video: <InsertFile fileType={toolName} onConfirm={onSetFormat} />,
+    file: <InsertFile fileType={toolName} onConfirm={onSetFormat} />,
   };
 
   return optionsMap[toolName] || '';

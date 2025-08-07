@@ -1,18 +1,8 @@
-.editableWrapper {
-  padding: 50px 100px;
-  border: 1px solid #e5e5e5;
-  flex: 1;
-  background-color: #fff;
-  color: #000;
-  border-radius: 0 0 10px 10px;
-  position: relative;
-}
-
 .editable {
-  height: 100%;
-  border: 1px dashed red;
+  flex: 1;
   outline: none;
   overflow: hidden auto;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 50px;
 }

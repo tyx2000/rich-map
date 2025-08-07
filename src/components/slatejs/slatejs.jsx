@@ -30,6 +30,8 @@ import styles from './slatejs.module.css';
 import { faker, tr } from '@faker-js/faker';
 import Chunk from './components/chunk.jsx';
 import PerformanceControls from '../performanceControls/index.jsx';
+import { withCursors, withYjs, YjsEditor } from '@slate-yjs/core';
+import { Cursors } from './multicursor.jsx';
 
 // 每个对象即是element属性
 const initialValue = [
@@ -187,12 +189,15 @@ const createEditor = (config) => {
   const editor = withCustomerElement(
     withHistory(withReact(creaetSlateEditor())),
   );
+  // enable chunking, control the number of nodes per lowest-level chunk for a given parent node
+  // in most circumstances, setting the chunk size to 1000 for the editor and null for all other ancestors works well
+  // chunking can only be enabled for nodes whose children are all block elements
   editor.getChunkSize = (node) =>
     config.chunking && Editor.isEditor(node) ? config.chunkSize : null;
   return editor;
 };
 
-export default function Slatejs() {
+export default function Slatejs({ sharedType, provider }) {
   // const [editor] = useState(() => withReact(createEditor()));
   // const editor = useMemo(() => {
   //   const editor = withCustomerElement(withHistory(withReact(createEditor())));
@@ -200,6 +205,44 @@ export default function Slatejs() {
   //     config.chunking && Editor.isEditor(node) ? config.chunkSize : null;
   //   return editor;
   // }, []);
+  // const collaborative = !!(sharedType && provider);
+
+  // const newEditor = (config) => {
+  //   const editor = withCustomerElement(
+  //     withHistory(
+  //       withReact(
+  //         withCursors(
+  //           withYjs(creaetSlateEditor(), sharedType),
+  //           provider.awareness,
+  //           {
+  //             data: {
+  //               name: faker.person.fullName(),
+  //               color: '#5e08a0',
+  //             },
+  //           },
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  //   const { normalizeNode } = editor;
+  //   editor.normalizeNode = (entry, options) => {
+  //     const [node] = entry;
+  //     if (!Editor.isEditor(node) || node.children.length > 0) {
+  //       return normalizeNode(entry, options);
+  //     }
+  //     Transforms.insertNodes(
+  //       editor,
+  //       {
+  //         children: [{ text: '' }],
+  //       },
+  //       { at: [0] },
+  //     );
+  //   };
+  //   editor.getChunkSize = (node) =>
+  //     config.chunking && Editor.isEditor(node) ? config.chunkSize : null;
+
+  //   return editor;
+  // };
 
   const [rendering, setRendering] = useState(false);
   const [config, baseSetConfig] = useState(initialConfig);
@@ -218,6 +261,15 @@ export default function Slatejs() {
       setEditorVersion((n) => n + 1);
     });
   });
+
+  // useEffect(() => {
+  //   if (collaborative) {
+  //     YjsEditor.connect(editor);
+  //     return () => {
+  //       YjsEditor.disconnect(editor);
+  //     };
+  //   }
+  // }, [editor]);
 
   // const initialValue = useMemo(
   //   () =>
@@ -344,11 +396,11 @@ export default function Slatejs() {
 
   return (
     <Fragment>
-      <PerformanceControls
+      {/* <PerformanceControls
         editor={editor}
         config={config}
         setConfig={setConfig}
-      />
+      /> */}
 
       {rendering ? (
         <div>Rendering&hellip;</div>
@@ -370,28 +422,28 @@ export default function Slatejs() {
         >
           <Toolbar />
           {/* <HoveringToolbar /> */}
-          <div className={styles.editableWrapper} contentEditable={false}>
-            <Editable
-              className={styles.editable}
-              spellCheck
-              autoFocus
-              decorate={decorate}
-              renderElement={renderElement}
-              renderChunk={config.chunkDivs ? renderChunk : undefined}
-              renderLeaf={renderLeaf}
-              onKeyDown={handleEditorKeydown}
-              placeholder="emmmmmmmmmmmmmmmmm"
-              renderPlaceholder={({ children, attributes }) => (
-                <div {...attributes}>
-                  {children}
-                  <pre>
-                    Use the renderPlaceholder prop to customize rendering of the
-                    placeholder
-                  </pre>
-                </div>
-              )}
-            />
-          </div>
+          {/* <div className={styles.editableWrapper} contentEditable={false}> */}
+          <Editable
+            className={styles.editable}
+            spellCheck
+            autoFocus
+            decorate={decorate}
+            renderElement={renderElement}
+            renderChunk={config.chunkDivs ? renderChunk : undefined}
+            renderLeaf={renderLeaf}
+            onKeyDown={handleEditorKeydown}
+            placeholder="emmmmmmmmmmmmmmmmm"
+            renderPlaceholder={({ children, attributes }) => (
+              <div {...attributes}>
+                {children}
+                <pre>
+                  Use the renderPlaceholder prop to customize rendering of the
+                  placeholder
+                </pre>
+              </div>
+            )}
+          />
+          {/* </div> */}
         </Slate>
       )}
     </Fragment>

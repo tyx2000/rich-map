@@ -1,25 +1,27 @@
-import { getYjsProviderForRoom } from "@liveblocks/yjs";
-import { withYjs, YjsEditor, withCursors } from "@slate-yjs/core";
-import { useEffect, useMemo, useState } from "react";
-import { createEditor, Editor, Transforms } from "slate";
-import { withReact, Slate, Editable } from "slate-react";
-import styles from "./collborativeEditor.module.css";
-import * as Y from "yjs";
+import { getYjsProviderForRoom } from '@liveblocks/yjs';
+import { withYjs, YjsEditor, withCursors } from '@slate-yjs/core';
+import { useEffect, useMemo, useState } from 'react';
+import { createEditor, Editor, Transforms } from 'slate';
+import { withReact, Slate, Editable } from 'slate-react';
+import styles from './collborativeEditor.module.css';
+import * as Y from 'yjs';
 import {
   LiveblocksProvider,
   RoomProvider,
   ClientSideSuspense,
   useRoom,
-} from "@liveblocks/react/suspense";
-import { Cursors } from "./multicursor";
+} from '@liveblocks/react/suspense';
+import { Cursors } from './multicursor';
+import RichSlateEditor from './slatejs';
+import { faker } from '@faker-js/faker';
 
 function SlateEditor({ sharedType, provider }) {
   const editor = useMemo(() => {
     const e = withReact(
       withCursors(withYjs(createEditor(), sharedType), provider.awareness, {
         data: {
-          name: Math.random().toString(36).substring(2, 7),
-          color: "#5E08A0",
+          name: faker.person.fullName(),
+          color: '#5E08A0',
         },
       }),
     );
@@ -33,7 +35,7 @@ function SlateEditor({ sharedType, provider }) {
 
       Transforms.insertNodes(
         editor,
-        { children: [{ text: "" }] },
+        { children: [{ text: '' }] },
         {
           at: [0],
         },
@@ -52,7 +54,7 @@ function SlateEditor({ sharedType, provider }) {
   return (
     <div className={styles.container}>
       <div className={styles.editorContainer}>
-        <Slate editor={editor} initialValue={[{ children: [{ text: "" }] }]}>
+        <Slate editor={editor} initialValue={[{ children: [{ text: '' }] }]}>
           <Cursors>
             <Editable
               className={styles.editor}
@@ -71,12 +73,12 @@ function CollaborativeEditor() {
 
   const yProvider = getYjsProviderForRoom(room);
   const yDoc = yProvider.getYDoc();
-  const sharedType = yDoc.get("slate", Y.XmlText);
+  const sharedType = yDoc.get('slate', Y.XmlText);
 
   useEffect(() => {
-    yProvider.on("sync", setConnected);
+    yProvider.on('sync', setConnected);
     return () => {
-      yProvider.off("sync", setConnected);
+      yProvider.off('sync', setConnected);
     };
   }, [room]);
 
@@ -85,6 +87,7 @@ function CollaborativeEditor() {
   }
 
   return <SlateEditor sharedType={sharedType} provider={yProvider} />;
+  // return <RichSlateEditor sharedType={sharedType} provider={yProvider} />;
 }
 
 export default function CollaborativeEditorWrapper() {
