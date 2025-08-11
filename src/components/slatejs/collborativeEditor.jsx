@@ -12,18 +12,21 @@ import {
   useRoom,
 } from '@liveblocks/react/suspense';
 import { Cursors } from './multicursor';
-import RichSlateEditor from './slatejs';
 import { faker } from '@faker-js/faker';
+import withCustomerElement from '../../../utils/withCustomerElement';
+import Toolbar from '../toolbar/toolbar';
 
 function SlateEditor({ sharedType, provider }) {
   const editor = useMemo(() => {
-    const e = withReact(
-      withCursors(withYjs(createEditor(), sharedType), provider.awareness, {
-        data: {
-          name: faker.person.fullName(),
-          color: '#5E08A0',
-        },
-      }),
+    const e = withCustomerElement(
+      withReact(
+        withCursors(withYjs(createEditor(), sharedType), provider.awareness, {
+          data: {
+            name: faker.person.fullName(),
+            color: '#5E08A0',
+          },
+        }),
+      ),
     );
     const { normalizeNode } = e;
     e.normalizeNode = (entry, options) => {
@@ -55,6 +58,7 @@ function SlateEditor({ sharedType, provider }) {
     <div className={styles.container}>
       <div className={styles.editorContainer}>
         <Slate editor={editor} initialValue={[{ children: [{ text: '' }] }]}>
+          {/* <Toolbar /> */}
           <Cursors>
             <Editable
               className={styles.editor}

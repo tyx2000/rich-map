@@ -4,6 +4,7 @@ import { Editor, Range, Text, Transforms } from 'slate';
 import { useFocused, useSlate } from 'slate-react';
 import slateCommand from '../../../../utils/slateCommand';
 import useClickOutside from '../../../hooks/useClickOutside';
+import Toolbar from '../../toolbar/toolbar';
 
 function Portal({ children }) {
   return typeof document === 'object'
@@ -101,7 +102,8 @@ export default function HoveringToolbar() {
         }}
         // =========================================
       >
-        {['bold', 'italic', 'del', 'underline', 'bgc'].map((item) =>
+        <Toolbar hovering />
+        {/* {['bold', 'italic', 'del', 'underline', 'bgc'].map((item) =>
           item === 'bgc' ? (
             <input
               type="color"
@@ -113,7 +115,7 @@ export default function HoveringToolbar() {
               {item}
             </button>
           ),
-        )}
+        )} */}
       </div>
     </Portal>
   );

@@ -421,7 +421,7 @@ export default function Slatejs({ sharedType, provider }) {
           }}
         >
           <Toolbar />
-          {/* <HoveringToolbar /> */}
+          <HoveringToolbar />
           {/* <div className={styles.editableWrapper} contentEditable={false}> */}
           <Editable
             className={styles.editable}

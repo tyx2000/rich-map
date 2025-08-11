@@ -24,7 +24,6 @@ import {
   Heading,
 } from 'lucide-react';
 import ToolButton from './toolButton';
-import { createPortal } from 'react-dom';
 import { useState } from 'react';
 
 const toolMap = {
@@ -55,10 +54,24 @@ const toolMap = {
   comment: <MessageSquareText size={16} />,
 };
 
-export default function Toolbar() {
+export default function Toolbar({ hovering }) {
   const editor = useSlate();
 
   const [selectedToolName, setSelectedToolName] = useState('');
+  const tools = Object.keys(toolMap).filter((item) =>
+    hovering
+      ? [
+          'fontSize',
+          'bold',
+          'static',
+          'underline',
+          'strikethrough',
+          'color',
+          'highlight',
+          'comment',
+        ].includes(item)
+      : true,
+  );
 
   return (
     <div
@@ -68,7 +81,7 @@ export default function Toolbar() {
         e.preventDefault();
       }}
     >
-      {Object.keys(toolMap).map((toolName, index) => (
+      {tools.map((toolName, index) => (
         <ToolButton
           key={toolName + index}
           toolName={toolName}
