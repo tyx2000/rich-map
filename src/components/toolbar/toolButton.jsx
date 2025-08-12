@@ -35,6 +35,7 @@ const renderOptions = (toolName, onSetFormat) => {
 export default function ToolButton({
   children,
   toolName,
+  hovering,
   selectedToolName,
   setSelectedToolName,
 }) {
@@ -144,17 +145,11 @@ export default function ToolButton({
     <div className={styles.toolButton} onClick={handleToolItemClick}>
       {children}
       {withOptions && (
-        <div
-          ref={toolOptionsRef}
-          className={[
-            styles.options,
-            toolName === selectedToolName ? styles.showOptions : '',
-          ].join(' ')}
-        >
+        <div ref={toolOptionsRef} className={[].join(' ')}>
           {renderOptions(toolName, onSetFormat)}
         </div>
       )}
-      <div className={styles.popover}>{toolName}</div>
+      {!hovering && <div className={styles.popover}>{toolName}</div>}
     </div>
   );
 }

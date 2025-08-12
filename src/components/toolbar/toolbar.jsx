@@ -25,13 +25,15 @@ import {
 } from 'lucide-react';
 import ToolButton from './toolButton';
 import { useState } from 'react';
+import FontSize from './components/fontSize';
+import ToolbarItem from './components/toolbarItem';
 
 const toolMap = {
   undo: <Undo2 size={16} />,
   redo: <Redo2 size={16} />,
   divider1: <div className={styles.divider}></div>,
   header: <Heading size={16} />,
-  fontSize: 'fs',
+  fontSize: <FontSize />,
   bold: <Bold size={16} />,
   italic: <Italic size={16} />,
   underline: <Underline size={16} />,
@@ -54,24 +56,51 @@ const toolMap = {
   comment: <MessageSquareText size={16} />,
 };
 
+const tools = [
+  'undo',
+  'redo',
+  'divider',
+  'header',
+  'fontSize',
+  'bold',
+  'italic',
+  'underline',
+  'strikethrough',
+  'code',
+  'highlight',
+  'divider',
+  'align',
+  'list',
+  'checklist',
+  'divider',
+  'link',
+  'image',
+  'table',
+  'video',
+  'audio',
+  'file',
+  'divider',
+  'comment',
+];
+
 export default function Toolbar({ hovering }) {
   const editor = useSlate();
 
   const [selectedToolName, setSelectedToolName] = useState('');
-  const tools = Object.keys(toolMap).filter((item) =>
-    hovering
-      ? [
-          'fontSize',
-          'bold',
-          'static',
-          'underline',
-          'strikethrough',
-          'color',
-          'highlight',
-          'comment',
-        ].includes(item)
-      : true,
-  );
+  // const tools = Object.keys(toolMap).filter((item) =>
+  //   hovering
+  //     ? [
+  //         'fontSize',
+  //         'bold',
+  //         'static',
+  //         'underline',
+  //         'strikethrough',
+  //         'color',
+  //         'highlight',
+  //         'comment',
+  //       ].includes(item)
+  //     : true,
+  // );
 
   return (
     <div
@@ -81,16 +110,20 @@ export default function Toolbar({ hovering }) {
         e.preventDefault();
       }}
     >
-      {tools.map((toolName, index) => (
+      {tools.map((item) => (
+        <ToolbarItem key={item} name={item} />
+      ))}
+      {/* {tools.map((toolName, index) => (
         <ToolButton
           key={toolName + index}
+          hovering={hovering}
           toolName={toolName}
           selectedToolName={selectedToolName}
           setSelectedToolName={(val) => setSelectedToolName(val)}
         >
           {toolMap[toolName] || toolName}
         </ToolButton>
-      ))}
+      ))} */}
     </div>
   );
 }

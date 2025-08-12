@@ -5,12 +5,7 @@ import { useFocused, useSlate } from 'slate-react';
 import slateCommand from '../../../../utils/slateCommand';
 import useClickOutside from '../../../hooks/useClickOutside';
 import Toolbar from '../../toolbar/toolbar';
-
-function Portal({ children }) {
-  return typeof document === 'object'
-    ? createPortal(children, document.body)
-    : null;
-}
+import Portal from '../../portal';
 
 export default function HoveringToolbar() {
   const ref = useRef(null);

@@ -12,7 +12,7 @@ export default function Chunk({
     marginBottom: outline ? 20 : undefined,
   };
   return (
-    <div {...attributes} style={style}>
+    <div {...attributes} style={style} className="chunk-indicator">
       {children}
     </div>
   );

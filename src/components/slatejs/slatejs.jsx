@@ -251,7 +251,7 @@ export default function Slatejs({ sharedType, provider }) {
   const [editorVersion, setEditorVersion] = useState(0);
   const setConfig = useCallback((partialConfig) => {
     const newConfig = { ...config, ...partialConfig };
-    setRendering(tr);
+    setRendering(true);
     baseSetConfig(newConfig);
     setSearchParams(newConfig);
     setTimeout(() => {
