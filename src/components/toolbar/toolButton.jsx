@@ -42,12 +42,12 @@ export default function ToolButton({
   const editor = useSlate();
   const toolOptionsRef = useRef(null);
 
-  useClickOutside(toolOptionsRef, () => {
-    if (toolOptionsRef.current && selectedToolName === toolName) {
-      // setSelectedToolName('');
-      console.log('sssssssss');
-    }
-  });
+  // useClickOutside(toolOptionsRef, () => {
+  //   if (toolOptionsRef.current && selectedToolName === toolName) {
+  //     // setSelectedToolName('');
+  //     console.log('sssssssss');
+  //   }
+  // });
 
   const withOptions = [
     'header',

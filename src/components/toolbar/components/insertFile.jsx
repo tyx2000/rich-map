@@ -7,7 +7,7 @@ import styles from '../toolButton.module.css';
  * @param {onConfirm} confirm to insert
  * @returns
  */
-export default function InsertFile({ fileType, onConfirm }) {
+export default function InsertFile({ fileType, onSet }) {
   const handleFromLocal = () => {
     console.log('a');
     const el = document.createElement('input');
@@ -17,7 +17,7 @@ export default function InsertFile({ fileType, onConfirm }) {
       console.log('files', e.target.files);
       // filter file according to fileType
       const fileUrl = 'https://i.imgur.com/VZewSe2.jpeg';
-      onConfirm(fileUrl);
+      onSet(fileType, fileUrl);
     };
     el.oncancel = () => {
       console.log('cancel');
@@ -30,41 +30,18 @@ export default function InsertFile({ fileType, onConfirm }) {
     el.click();
   };
 
-  const handleFromURL = () => {};
+  const handleFromURL = () => {
+    console.log('upload from url');
+    onSet(fileType, 'a url');
+  };
 
   return (
     <Fragment>
-      <div
-        className={styles.optionsItem}
-        style={{ fontSize: 12 }}
-        onClick={handleFromLocal}
-      >
-        Choose Local File
+      <div className={styles.optionsItem} onClick={handleFromLocal}>
+        Upload from local
       </div>
-      <div className={styles.optionsItem}>
-        <input
-          type="text"
-          placeholder="From URL"
-          style={{
-            height: 24,
-            borderRadius: 6,
-            border: '2px solid #f5f5f5',
-            outline: 'none',
-            fontSize: 12,
-          }}
-        />
-        <button
-          onClick={handleFromURL}
-          style={{
-            background: '#f4f4f4',
-            border: 'none',
-            borderRadius: 5,
-            marginLeft: 8,
-            padding: '2px 8px',
-          }}
-        >
-          OK
-        </button>
+      <div className={styles.optionsItem} onClick={handleFromURL}>
+        Insert via url
       </div>
     </Fragment>
   );

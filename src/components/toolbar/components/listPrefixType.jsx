@@ -80,7 +80,7 @@ const prefixs = [
   },
 ];
 
-export default function ListPrefixType({ onAddList }) {
+export default function ListPrefixType({ onSet }) {
   return (
     <Fragment>
       {prefixs.map((item) => (
@@ -91,7 +91,7 @@ export default function ListPrefixType({ onAddList }) {
             fontSize: 13,
             width: 130,
           }}
-          onClick={() => onAddList(item.value)}
+          onClick={() => onSet('list', item.value)}
         >
           {item.label}
         </div>

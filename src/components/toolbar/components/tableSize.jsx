@@ -1,4 +1,4 @@
-export default function TableSize({ onSetFormat }) {
+export default function TableSize({ onSet }) {
   return (
     <div
       style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 5 }}
@@ -7,14 +7,16 @@ export default function TableSize({ onSetFormat }) {
         <div
           key={item + index}
           style={{
-            width: 10,
-            height: 7,
+            padding: 2,
             borderRadius: 3,
             fontSize: 10,
             border: '1px solid #000',
+            cursor: 'pointer',
           }}
-          onClick={() => onSetFormat(index)}
-        ></div>
+          onClick={() => onSet('table', index)}
+        >
+          {index}
+        </div>
       ))}
     </div>
   );

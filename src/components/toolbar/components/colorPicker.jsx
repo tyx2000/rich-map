@@ -1,4 +1,4 @@
-export default function ColorPicker({ onSetFormat }) {
+export default function ColorPicker({ name, onSet }) {
   return (
     <div
       style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}
@@ -15,7 +15,7 @@ export default function ColorPicker({ onSetFormat }) {
         'gray',
       ].map((color) => (
         <div
-          onClick={() => onSetFormat(color)}
+          onClick={() => onSet(name, color)}
           key={color}
           style={{
             width: 25,

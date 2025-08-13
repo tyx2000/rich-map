@@ -12,16 +12,16 @@ export default function HoveringToolbar() {
   const editor = useSlate();
   const focused = useFocused();
 
-  useClickOutside(ref, () => {
-    console.log('outside', ref.current, editor.selection);
+  // useClickOutside(ref, () => {
+  //   console.log('outside', ref.current, editor.selection);
 
-    if (ref.current && !editor.selection) {
-      const el = ref.current;
-      el.style.opacity = '0';
-      el.style.top = '-10000px';
-      el.style.left = '-10000px';
-    }
-  });
+  //   if (ref.current && !editor.selection) {
+  //     const el = ref.current;
+  //     el.style.opacity = '0';
+  //     el.style.top = '-10000px';
+  //     el.style.left = '-10000px';
+  //   }
+  // });
 
   useEffect(() => {
     const el = ref.current;
@@ -83,13 +83,13 @@ export default function HoveringToolbar() {
         ref={ref}
         style={{
           position: 'absolute',
-          zIndex: 1,
+          zIndex: 10,
           top: -10000,
           left: -10000,
           marginTop: -6,
           opacity: 0,
           borderRadius: 4,
-          transition: 'opacity 0.2s',
+          transition: 'opacity linear 0.3s',
         }}
         // =========================================
         onMouseDown={(e) => {

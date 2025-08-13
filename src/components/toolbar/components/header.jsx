@@ -24,14 +24,14 @@ const headers = [
   },
 ];
 
-export default function Header({ onSetFormat }) {
+export default function Header({ onSet }) {
   return (
     <Fragment>
       {headers.map((header) => (
         <div
           key={header.value}
           className={styles.optionsItem}
-          onClick={() => onSetFormat('header', header.value)}
+          onClick={() => onSet('header', header.value)}
         >
           {header.el}
         </div>
