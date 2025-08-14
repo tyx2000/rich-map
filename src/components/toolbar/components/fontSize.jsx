@@ -1,5 +1,6 @@
 import { Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
+import styles from './options.module.css';
 
 export default function FontSize({ onSet }) {
   const [fontSize, setFontSize] = useState(14);
@@ -9,51 +10,19 @@ export default function FontSize({ onSet }) {
       onSet('fontSize', size);
     } else {
       const newSize = type === 'minus' ? fontSize - 1 : fontSize + 1;
-      const finalSize = newSize > 30 || newSize < 10 ? fontSize : newSize;
+      const finalSize = newSize > 30 || newSize < 8 ? fontSize : newSize;
       setFontSize(finalSize);
       onSet('fontSize', finalSize);
     }
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <div
-        style={{
-          width: 30,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onClick={() => onChangeFontSize('minus')}
-      >
+    <div className={styles.fontSizeWrapper}>
+      <div className={styles.minus} onClick={() => onChangeFontSize('minus')}>
         <Minus size={16}></Minus>
       </div>
-      <input
-        style={{
-          width: 40,
-          textAlign: 'center',
-          outline: 'none',
-          border: 'none',
-        }}
-        disabled
-        type="text"
-        value={fontSize}
-      />
-      <div
-        style={{
-          width: 30,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onClick={() => onChangeFontSize('plus')}
-      >
+      <div className={styles.input}>{fontSize}</div>
+      <div className={styles.plus} onClick={() => onChangeFontSize('plus')}>
         <Plus size={16}></Plus>
       </div>
     </div>

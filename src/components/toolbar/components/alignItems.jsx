@@ -1,6 +1,6 @@
 import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
 import { Fragment } from 'react';
-import styles from '../toolButton.module.css';
+import styles from './options.module.css';
 
 const aligns = [
   { value: 'left', el: <AlignLeft size={18} /> },
@@ -14,7 +14,7 @@ export default function AlignItems({ onSet }) {
       {aligns.map((item) => (
         <div
           key={item.value}
-          className={styles.optionsItem}
+          className={styles.insertFileOption}
           onClick={() => onSet('align', item.value)}
         >
           {item.el}

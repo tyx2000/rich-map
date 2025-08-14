@@ -1,25 +1,11 @@
 import { Fragment } from 'react';
-import styles from '../toolButton.module.css';
+import styles from './options.module.css';
 
 const prefixs = [
   {
     label: (
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          gap: 5,
-          alignItems: 'center',
-        }}
-      >
-        <div
-          style={{
-            width: 7,
-            height: 7,
-            borderRadius: '50%',
-            backgroundColor: '#000',
-          }}
-        ></div>
+      <div className={styles.listPrefixLabel}>
+        <div className={styles.typeIcon}></div>
         <div>Default</div>
       </div>
     ),
@@ -27,20 +13,11 @@ const prefixs = [
   },
   {
     label: (
-      <div
-        style={{
-          display: 'flex',
-          width: '100%',
-          gap: 5,
-          alignItems: 'center',
-        }}
-      >
+      <div className={styles.listPrefixLabel}>
         <div
+          className={styles.typeIcon}
           style={{
-            width: 6,
-            height: 6,
-            borderRadius: '50%',
-            border: '1px solid #000',
+            backgroundColor: '#fff',
           }}
         ></div>
         <div>Circle</div>
@@ -50,22 +27,14 @@ const prefixs = [
   },
   {
     label: (
-      <div
-        style={{
-          display: 'flex',
-          width: '100%',
-          gap: 5,
-          alignItems: 'center',
-        }}
-      >
+      <div className={styles.listPrefixLabel}>
         <div
+          className={styles.typeIcon}
           style={{
-            width: 7,
-            height: 7,
-            backgroundColor: '#000',
+            borderRadius: 0,
           }}
         ></div>
-        <div>Default</div>
+        <div>Square</div>
       </div>
     ),
     value: 'square',
@@ -86,7 +55,7 @@ export default function ListPrefixType({ onSet }) {
       {prefixs.map((item) => (
         <div
           key={item.value}
-          className={styles.optionsItem}
+          className={styles.listPrefixItem}
           style={{
             fontSize: 13,
             width: 130,

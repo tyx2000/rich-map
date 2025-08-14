@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import styles from '../toolButton.module.css';
+import styles from './options.module.css';
 
 const headers = [
   {
@@ -30,7 +30,7 @@ export default function Header({ onSet }) {
       {headers.map((header) => (
         <div
           key={header.value}
-          className={styles.optionsItem}
+          className={styles.insertFileOption}
           onClick={() => onSet('header', header.value)}
         >
           {header.el}

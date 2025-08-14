@@ -1,0 +1,166 @@
+.colorPickerWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  .colorRow {
+    display: flex;
+    gap: 5px;
+  }
+  .colorItem {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    transition: all linear 0.1s;
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.2);
+    }
+  }
+}
+
+.fontSizeWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .input {
+    width: 40px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .minus,
+  .plus {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    transition: all linear 0.2s;
+    &:hover {
+      background-color: #eee;
+    }
+  }
+}
+
+.fontSizeOptionsItem {
+  text-align: center;
+  font-size: 12px;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: all linear 0.2s;
+  padding: 0 5px;
+  cursor: pointer;
+  & + .fontSizeOptionsItem {
+    margin-top: 5px;
+  }
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.listPrefixLabel {
+  width: 100%;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  .typeIcon {
+    width: 6px;
+    height: 6px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    background-color: #000;
+  }
+}
+.listPrefixItem {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  cursor: pointer;
+  transition: all linear 0.2s;
+  border-radius: 8px;
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.tableCell {
+  padding: 2px;
+  border-radius: 3px;
+  font-size: 10px;
+  border: 1px solid #000;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+    background-color: #000;
+  }
+}
+
+.insertFileOption {
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all linear 0.2s;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.modalMask {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  .modal {
+    width: 400px;
+    height: 200px;
+    border-radius: 5px;
+    background-color: #fff;
+    opacity: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+    input {
+      border: none;
+      outline: none;
+      height: 35px;
+      line-height: 35px;
+      padding: 0 10px;
+      font-size: 13px;
+      width: 250px;
+      box-shadow:
+        rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+        rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+      border-radius: 5px;
+    }
+    button {
+      height: 30px;
+      box-shadow:
+        rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+        rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+      border: none;
+      background-color: #000;
+      color: #fff;
+      border-radius: 5px;
+    }
+    button:first-child {
+      color: #000;
+      background-color: #fff;
+      margin-right: 25px;
+    }
+  }
+}

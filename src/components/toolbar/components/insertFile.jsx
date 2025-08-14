@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import styles from '../toolButton.module.css';
+import styles from './options.module.css';
 
 /**
  *
@@ -9,7 +9,6 @@ import styles from '../toolButton.module.css';
  */
 export default function InsertFile({ fileType, onSet }) {
   const handleFromLocal = () => {
-    console.log('a');
     const el = document.createElement('input');
     el.type = 'file';
     el.style.opacity = '0';
@@ -30,17 +29,15 @@ export default function InsertFile({ fileType, onSet }) {
     el.click();
   };
 
-  const handleFromURL = () => {
-    console.log('upload from url');
-    onSet(fileType, 'a url');
-  };
-
   return (
     <Fragment>
-      <div className={styles.optionsItem} onClick={handleFromLocal}>
+      <div className={styles.insertFileOption} onClick={handleFromLocal}>
         Upload from local
       </div>
-      <div className={styles.optionsItem} onClick={handleFromURL}>
+      <div
+        className={styles.insertFileOption}
+        onClick={() => onSet(fileType, 'upload-via-url')}
+      >
         Insert via url
       </div>
     </Fragment>

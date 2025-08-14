@@ -23,69 +23,18 @@ import {
   Heading,
 } from 'lucide-react';
 import FontSize from './components/fontSize';
+import FontSizeOptions from './components/fontSizeOptions';
 import AlignItems from './components/alignItems';
 import ColorPicker from './components/colorPicker';
 import Header from './components/header';
 import InsertFile from './components/insertFile';
 import ListPrefixType from './components/listPrefixType';
 import TableSize from './components/tableSize';
+import InputUrlModal from './components/inputUrlModal';
 import useClickOutside from '../../hooks/useClickOutside';
 import slateCommand from '../../../utils/slateCommand';
-import { useSlate } from 'slate-react';
-
-const tools = [
-  'undo',
-  'redo',
-  'divider',
-  'header',
-  'fontSize',
-  'bold',
-  'italic',
-  'underline',
-  'strikethrough',
-  'color',
-  'code',
-  'highlight',
-  'divider',
-  'align',
-  'list',
-  'checklist',
-  'divider',
-  'link',
-  'image',
-  'table',
-  'video',
-  'audio',
-  'file',
-  'divider',
-  'comment',
-];
-
-const hoveringTools = [
-  'fontSize',
-  'bold',
-  'italic',
-  'underline',
-  'strikethrough',
-  'color',
-  'highlight',
-  'comment',
-];
-
-const toolItemWithOptions = [
-  'header',
-  'fontSize',
-  'color',
-  'highlight',
-  'align',
-  'list',
-  'link',
-  'image',
-  'table',
-  'video',
-  'audio',
-  'file',
-];
+import { useSlateStatic } from 'slate-react';
+import { tools, hoveringTools, toolsWithOptions } from '../../constances/tools';
 
 function renderIcon(name, onSet) {
   switch (name) {
@@ -141,7 +90,7 @@ const renderOptions = (name, onSet) => {
     case 'header':
       return <Header onSet={onSet} />;
     case 'fontSize':
-      return 'fs';
+      return <FontSizeOptions onSet={onSet} />;
     case 'color':
       return <ColorPicker name="color" onSet={onSet} />;
     case 'highlight':
@@ -150,8 +99,6 @@ const renderOptions = (name, onSet) => {
       return <AlignItems onSet={onSet} />;
     case 'list':
       return <ListPrefixType onSet={onSet} />;
-    case 'link':
-      return <InsertFile fileType="link" onSet={onSet} />;
     case 'image':
       return <InsertFile fileType="image" onSet={onSet} />;
     case 'table':
@@ -166,17 +113,18 @@ const renderOptions = (name, onSet) => {
 };
 
 export default function Toolbar({ hovering }) {
-  const editor = useSlate();
+  const editor = useSlateStatic();
   const toolbarRef = useRef(null);
   const [selectedToolName, setSelectedToolName] = useState('');
   const [optionsOffsetLeft, setOptionsOffsetLeft] = useState(0);
+  const [showInputUrlModal, setShowInputUrlModal] = useState(false);
 
   useClickOutside(toolbarRef, () => {
     setSelectedToolName('');
   });
 
   const onClickToolItem = (e, name) => {
-    if (toolItemWithOptions.includes(name)) {
+    if (toolsWithOptions.includes(name)) {
       setSelectedToolName(name);
       const childEl = e.currentTarget;
       const parentEl = childEl.parentNode;
@@ -192,11 +140,25 @@ export default function Toolbar({ hovering }) {
     setSelectedToolName('');
     console.log(name, value);
     if (['bold', 'italic', 'underline', 'strikethrough'].includes(name)) {
+      // font style
       slateCommand.toggleMark(editor, name, true);
     } else if (['color', 'highlight'].includes(name)) {
+      // font color
       slateCommand.toggleMark(editor, name, value);
-    } else {
+    } else if (['image', 'audio', 'video', 'file'].includes(name)) {
+      // insert file from local or url
+      if (value === 'upload-via-url') {
+        setShowInputUrlModal(name);
+        console.log(editor.selection);
+      } else {
+        insertFile(name, value);
+      }
+    } else if (name === 'table') {
     }
+  };
+
+  const insertFile = (fileType, value) => {
+    console.log(fileType, value);
   };
 
   return (
@@ -205,7 +167,9 @@ export default function Toolbar({ hovering }) {
       className={styles.toolbar}
       onMouseDown={(e) => {
         // keep focus or selection in the editable
-        e.preventDefault();
+        if (!showInputUrlModal) {
+          e.preventDefault();
+        }
       }}
     >
       {(hovering ? hoveringTools : tools).map((item, index) => (
@@ -216,11 +180,16 @@ export default function Toolbar({ hovering }) {
         >
           {renderIcon(item, onSet)}
           {item !== 'divider' && item !== selectedToolName && (
-            <div className={styles.popover}>{item}</div>
+            <div
+              style={{ top: hovering ? -35 : 35 }}
+              className={styles.popover}
+            >
+              {item}
+            </div>
           )}
         </div>
       ))}
-      {toolItemWithOptions && selectedToolName && (
+      {toolsWithOptions.includes(selectedToolName) && (
         <div
           className={styles.options}
           style={{
@@ -230,6 +199,15 @@ export default function Toolbar({ hovering }) {
         >
           {renderOptions(selectedToolName, onSet)}
         </div>
+      )}
+      {showInputUrlModal && (
+        <InputUrlModal
+          onConfirm={(url) => {
+            insertFile(showInputUrlModal, url);
+            setShowInputUrlModal(false);
+          }}
+          onCancel={() => setShowInputUrlModal(false)}
+        />
       )}
     </div>
   );

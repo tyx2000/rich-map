@@ -1,11 +1,4 @@
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { Fragment, useCallback, useState } from 'react';
 import {
   createEditor as creaetSlateEditor,
   Editor,
@@ -14,7 +7,6 @@ import {
   Point,
   Element,
   Text,
-  Range,
 } from 'slate';
 import { Slate, withReact, Editable } from 'slate-react';
 import slateCommand from '../../../utils/slateCommand.js';
@@ -27,11 +19,9 @@ import HoveringToolbar from './components/hoveringToolbar.jsx';
 import { withHistory } from 'slate-history';
 import withCustomerElement from '../../../utils/withCustomerElement.js';
 import styles from './slatejs.module.css';
-import { faker, tr } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import Chunk from './components/chunk.jsx';
 import PerformanceControls from '../performanceControls/index.jsx';
-import { withCursors, withYjs, YjsEditor } from '@slate-yjs/core';
-import { Cursors } from './multicursor.jsx';
 
 // 每个对象即是element属性
 const initialValue = [
@@ -286,6 +276,11 @@ export default function Slatejs({ sharedType, provider }) {
   //   [],
   // );
 
+  /**
+   *  children
+   *  element
+   *  attributes
+   */
   const renderElement = useCallback(
     (props) => (
       <SlateElement
@@ -308,6 +303,13 @@ export default function Slatejs({ sharedType, provider }) {
     [config.contentVisibilityMode, config.chunkOutlines],
   );
 
+  /**
+   *  children
+   *  leaf
+   *  text
+   *  attributes
+   *  leafPosition { start, end, isFirst?, isLast? }
+   */
   const renderLeaf = useCallback((props) => <LeafElement {...props} />, []);
 
   const handleEditorKeydown = (event) => {
@@ -394,6 +396,10 @@ export default function Slatejs({ sharedType, provider }) {
     [searchValue],
   );
 
+  const storeSelection = () => {};
+
+  const restoreSelection = () => {};
+
   return (
     <Fragment>
       {/* <PerformanceControls
@@ -431,7 +437,7 @@ export default function Slatejs({ sharedType, provider }) {
             renderElement={renderElement}
             renderChunk={config.chunkDivs ? renderChunk : undefined}
             renderLeaf={renderLeaf}
-            onKeyDown={handleEditorKeydown}
+            // onKeyDown={handleEditorKeydown}
             placeholder="emmmmmmmmmmmmmmmmm"
             renderPlaceholder={({ children, attributes }) => (
               <div {...attributes}>
