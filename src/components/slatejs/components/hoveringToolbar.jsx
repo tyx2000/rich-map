@@ -1,9 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { Editor, Range, Text, Transforms } from 'slate';
 import { useFocused, useSlate } from 'slate-react';
 import slateCommand from '../../../../utils/slateCommand';
-import useClickOutside from '../../../hooks/useClickOutside';
 import Toolbar from '../../toolbar/toolbar';
 import Portal from '../../portal';
 
@@ -11,17 +9,6 @@ export default function HoveringToolbar() {
   const ref = useRef(null);
   const editor = useSlate();
   const focused = useFocused();
-
-  // useClickOutside(ref, () => {
-  //   console.log('outside', ref.current, editor.selection);
-
-  //   if (ref.current && !editor.selection) {
-  //     const el = ref.current;
-  //     el.style.opacity = '0';
-  //     el.style.top = '-10000px';
-  //     el.style.left = '-10000px';
-  //   }
-  // });
 
   useEffect(() => {
     const el = ref.current;
@@ -47,35 +34,7 @@ export default function HoveringToolbar() {
     el.style.opacity = '1';
     el.style.top = `${offset.top + window.pageYOffset - el.offsetHeight}px`;
     el.style.left = `${offset.left + window.pageXOffset - el.offsetWidth / 2 + offset.width / 2}px`;
-    console.log(el.style);
   });
-
-  const handleFontMark = (format, color) => {
-    if (format === 'bgc') {
-      const selectedNodes = Editor.nodes(editor, {
-        at: editor.selection,
-        match: (n) => Text.isText(n),
-      });
-      console.log(Array.from(selectedNodes));
-      Transforms.setNodes(
-        editor,
-        {
-          color: '#fff',
-          backgroundColor: color,
-        },
-        {
-          at: editor.selection,
-          match: (n) => {
-            // console.log('nnnnnn', n);
-            return Text.isText(n); // && !n.backgroundColor; 选中区包含已设置区则覆盖
-          },
-          split: true,
-        },
-      );
-    } else {
-      slateCommand.toggleMark(editor, format);
-    }
-  };
 
   return (
     <Portal>
@@ -91,26 +50,12 @@ export default function HoveringToolbar() {
           borderRadius: 4,
           transition: 'opacity linear 0.3s',
         }}
-        // =========================================
         onMouseDown={(e) => {
+          // just keep selection
           e.preventDefault();
         }}
-        // =========================================
       >
         <Toolbar hovering />
-        {/* {['bold', 'italic', 'del', 'underline', 'bgc'].map((item) =>
-          item === 'bgc' ? (
-            <input
-              type="color"
-              key={item}
-              onChange={(e) => handleFontMark(item, e.target.value)}
-            />
-          ) : (
-            <button key={item} onClick={() => handleFontMark(item)}>
-              {item}
-            </button>
-          ),
-        )} */}
       </div>
     </Portal>
   );

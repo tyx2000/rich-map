@@ -1,13 +1,14 @@
-import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router";
-import "./index.css";
-import TopLayer from "./components/toplayer/toplayer.jsx";
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router';
+import './index.css';
+import TopLayer from './components/toplayer/toplayer.jsx';
 // import SharedProsemirror from "./components/prosemirror/sharedprosemirror.jsx";
-import Slatejs from "./components/slatejs/slatejs.jsx";
-import Leaflet from "./components/leaflet/leaflet.jsx";
-import CollaborativeEditorWrapper from "./components/slatejs/collborativeEditor.jsx";
+import Slatejs from './components/slatejs/slatejs.jsx';
+import Leaflet from './components/leaflet/leaflet.jsx';
+import CollaborativeEditorWrapper from './components/slatejs/collborativeEditor.jsx';
+import ProseMirror from './components/prosemirror';
 
-createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<TopLayer />}>
@@ -17,7 +18,7 @@ createRoot(document.getElementById("root")).render(
           path="collaborativeSlatejs"
           element={<CollaborativeEditorWrapper />}
         />
-
+        <Route path="prosemirror" element={<ProseMirror />} />
         <Route path="leaflet" element={<Leaflet />} />
       </Route>
     </Routes>

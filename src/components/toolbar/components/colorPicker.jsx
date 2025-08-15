@@ -1,15 +1,14 @@
 import styles from './options.module.css';
 import colors from '../../../constances/colors';
 
-const colorKeys = Object.keys(colors).slice(1, 8);
-console.log({ colorKeys });
+const colorKeys = Object.keys(colors).slice(0, 7);
 
 export default function ColorPicker({ name, onSet }) {
   return (
     <div className={styles.colorPickerWrapper}>
       {colorKeys.map((colorKey) => (
-        <div className={styles.colorRow}>
-          {colors[colorKey].slice(1, 8).map((color) => (
+        <div key={colorKey} className={styles.colorRow}>
+          {colors[colorKey].slice(0, 8).map((color) => (
             <div
               className={styles.colorItem}
               onClick={() => onSet(name, color)}

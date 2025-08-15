@@ -1,6 +1,15 @@
 export default {
+  normal: [
+    'white',
+    'black',
+    'red',
+    'orange',
+    'yellow',
+    'green',
+    'blue',
+    'purple',
+  ],
   red: [
-    '#fef2f2',
     '#ffe2e2',
     '#ffc9c9',
     '#ffa2a2',
@@ -13,7 +22,6 @@ export default {
     '#460809',
   ],
   orange: [
-    '#fff7ed',
     '#ffedd4',
     '#ffd6a7',
     '#ffb86a',
@@ -26,7 +34,6 @@ export default {
     '#441306',
   ],
   amber: [
-    '#fffbeb',
     '#fef3c6',
     '#fee685',
     '#ffd230',
@@ -39,7 +46,6 @@ export default {
     '#461901',
   ],
   yellow: [
-    '#fefce8',
     '#fef9c2',
     '#fff085',
     '#ffdf20',
@@ -52,7 +58,6 @@ export default {
     '#432004',
   ],
   lime: [
-    '#f7fee7',
     '#ecfcca',
     '#d8f999',
     '#bbf451',
@@ -65,7 +70,6 @@ export default {
     '#192e03',
   ],
   green: [
-    '#f0fdf4',
     '#dcfce7',
     '#b9f8cf',
     '#7bf1a8',
@@ -78,7 +82,6 @@ export default {
     '#032e15',
   ],
   emerald: [
-    '#ecfdf5',
     '#d0fae5',
     '#a4f4cf',
     '#5ee9b5',
@@ -91,7 +94,6 @@ export default {
     '#002c22',
   ],
   teal: [
-    '#f0fdfa',
     '#cbfbf1',
     '#96f7e4',
     '#46ecd5',
@@ -104,7 +106,6 @@ export default {
     '#022f2e',
   ],
   cyan: [
-    '#ecfeff',
     '#cefafe',
     '#a2f4fd',
     '#53eafd',
@@ -117,7 +118,6 @@ export default {
     '#053345',
   ],
   sky: [
-    '#f0f9ff',
     '#dff2fe',
     '#b8e6fe',
     '#74d4ff',
@@ -130,7 +130,6 @@ export default {
     '#052f4a',
   ],
   blue: [
-    '#eff6ff',
     '#dbeafe',
     '#bedbff',
     '#8ec5ff',
@@ -143,7 +142,6 @@ export default {
     '#162456',
   ],
   indigo: [
-    '#eef2ff',
     '#e0e7ff',
     '#c6d2ff',
     '#a3b3ff',
@@ -156,7 +154,6 @@ export default {
     '#1e1a4d',
   ],
   violet: [
-    '#f5f3ff',
     '#ede9fe',
     '#ddd6ff',
     '#c4b4ff',
@@ -169,7 +166,6 @@ export default {
     '#2f0d68',
   ],
   purple: [
-    '#faf5ff',
     '#f3e8ff',
     '#e9d4ff',
     '#dab2ff',
@@ -182,7 +178,6 @@ export default {
     '#3c0366',
   ],
   fuchsia: [
-    '#fdf4ff',
     '#fae8ff',
     '#f6cfff',
     '#f4a8ff',
@@ -195,7 +190,6 @@ export default {
     '#4b004f',
   ],
   pink: [
-    '#fdf2f8',
     '#fce7f3',
     '#fccee8',
     '#fda5d5',
@@ -208,7 +202,6 @@ export default {
     '#510424',
   ],
   rose: [
-    '#fff1f2',
     '#ffe4e6',
     '#ffccd3',
     '#ffa1ad',
@@ -221,7 +214,6 @@ export default {
     '#4d0218',
   ],
   slate: [
-    '#f8fafc',
     '#f1f5f9',
     '#e2e8f0',
     '#cad5e2',
@@ -234,7 +226,6 @@ export default {
     '#020618',
   ],
   gray: [
-    '#f9fafb',
     '#f3f4f6',
     '#e5e7eb',
     '#d1d5dc',

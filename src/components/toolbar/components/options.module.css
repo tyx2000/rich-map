@@ -1,18 +1,22 @@
 .colorPickerWrapper {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 
   .colorRow {
     display: flex;
-    gap: 5px;
+    gap: 8px;
   }
   .colorItem {
     position: relative;
     width: 18px;
     height: 18px;
     border-radius: 50%;
+    border: 1px solid transparent;
     transition: all linear 0.1s;
+    box-shadow:
+      rgba(0, 0, 0, 0.12) 0px 1px 3px,
+      rgba(0, 0, 0, 0.24) 0px 1px 2px;
     &:hover {
       cursor: pointer;
       transform: scale(1.2);
@@ -89,15 +93,20 @@
   }
 }
 
-.tableCell {
-  padding: 2px;
-  border-radius: 3px;
-  font-size: 10px;
-  border: 1px solid #000;
-  cursor: pointer;
-  &:hover {
-    color: #fff;
-    background-color: #000;
+.tableWrapper {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+
+  .tableCell {
+    width: 13px;
+    height: 10px;
+    border-radius: 3px;
+    font-size: 10px;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    transition: all linear 0.2s;
   }
 }
 
@@ -156,6 +165,7 @@
       background-color: #000;
       color: #fff;
       border-radius: 5px;
+      cursor: pointer;
     }
     button:first-child {
       color: #000;

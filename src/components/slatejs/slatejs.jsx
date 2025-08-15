@@ -24,7 +24,7 @@ import Chunk from './components/chunk.jsx';
 import PerformanceControls from '../performanceControls/index.jsx';
 
 // 每个对象即是element属性
-const initialValue = [
+const defaultValue = [
   { type: 'title', children: [{ text: 'Enforce you layout' }] },
   { type: 'paragraph', children: [{ text: 'below checklist' }] },
   {
@@ -414,7 +414,8 @@ export default function Slatejs({ sharedType, provider }) {
         <Slate
           key={editorVersion}
           editor={editor}
-          initialValue={initialValue}
+          // initialValue={initialValue}
+          initialValue={defaultValue}
           onChange={(value) => {
             const isAstChange = editor.operations.some(
               (op) => 'set_selection' !== op.type,

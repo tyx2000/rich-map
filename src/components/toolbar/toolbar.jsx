@@ -117,7 +117,7 @@ export default function Toolbar({ hovering }) {
   const toolbarRef = useRef(null);
   const [selectedToolName, setSelectedToolName] = useState('');
   const [optionsOffsetLeft, setOptionsOffsetLeft] = useState(0);
-  const [showInputUrlModal, setShowInputUrlModal] = useState(false);
+  const [inputUrlFileType, setInputUrlFileType] = useState(false);
 
   useClickOutside(toolbarRef, () => {
     setSelectedToolName('');
@@ -139,21 +139,43 @@ export default function Toolbar({ hovering }) {
   const onSet = (name, value) => {
     setSelectedToolName('');
     console.log(name, value);
-    if (['bold', 'italic', 'underline', 'strikethrough'].includes(name)) {
-      // font style
-      slateCommand.toggleMark(editor, name, true);
-    } else if (['color', 'highlight'].includes(name)) {
-      // font color
-      slateCommand.toggleMark(editor, name, value);
-    } else if (['image', 'audio', 'video', 'file'].includes(name)) {
-      // insert file from local or url
-      if (value === 'upload-via-url') {
-        setShowInputUrlModal(name);
-        console.log(editor.selection);
-      } else {
-        insertFile(name, value);
-      }
-    } else if (name === 'table') {
+    switch (name) {
+      case 'header':
+        slateCommand.toggleMark(editor, value, true);
+        return;
+
+      case 'bold':
+      case 'italic':
+      case 'underline':
+      case 'strikethrough':
+        slateCommand.toggleMark(editor, name, true);
+        return;
+
+      case 'color':
+      case 'highlight':
+        slateCommand.toggleMark(editor, name, value);
+        return;
+
+      case 'code':
+        slateCommand.toggleCodeBlock(editor);
+        return;
+
+      case 'list':
+      case 'checklist':
+      case 'table':
+        // todo
+        return;
+
+      case 'image':
+      case 'audio':
+      case 'video':
+      case 'file':
+        if (value === 'upload-via-url') {
+          setInputUrlFileType(name);
+        } else {
+          insertFile(name, value);
+        }
+        return;
     }
   };
 
@@ -167,7 +189,7 @@ export default function Toolbar({ hovering }) {
       className={styles.toolbar}
       onMouseDown={(e) => {
         // keep focus or selection in the editable
-        if (!showInputUrlModal) {
+        if (!inputUrlFileType) {
           e.preventDefault();
         }
       }}
@@ -200,13 +222,14 @@ export default function Toolbar({ hovering }) {
           {renderOptions(selectedToolName, onSet)}
         </div>
       )}
-      {showInputUrlModal && (
+      {inputUrlFileType && (
         <InputUrlModal
+          fileType={inputUrlFileType}
           onConfirm={(url) => {
-            insertFile(showInputUrlModal, url);
-            setShowInputUrlModal(false);
+            insertFile(inputUrlFileType, url);
+            setInputUrlFileType(false);
           }}
-          onCancel={() => setShowInputUrlModal(false)}
+          onCancel={() => setInputUrlFileType(false)}
         />
       )}
     </div>
