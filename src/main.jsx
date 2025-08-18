@@ -6,7 +6,6 @@ import TopLayer from './components/toplayer/toplayer.jsx';
 import Slatejs from './components/slatejs/slatejs.jsx';
 import Leaflet from './components/leaflet/leaflet.jsx';
 import CollaborativeEditorWrapper from './components/slatejs/collborativeEditor.jsx';
-import ProseMirror from './components/prosemirror';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -18,7 +17,6 @@ createRoot(document.getElementById('root')).render(
           path="collaborativeSlatejs"
           element={<CollaborativeEditorWrapper />}
         />
-        <Route path="prosemirror" element={<ProseMirror />} />
         <Route path="leaflet" element={<Leaflet />} />
       </Route>
     </Routes>
