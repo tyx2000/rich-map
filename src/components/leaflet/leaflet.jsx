@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Carrot } from 'lucide-react';
+import colors from '../../constances/colors';
 
 const routes = {
   武汉: { latitude: 30.504124, longitude: 114.448153 },
@@ -89,6 +91,11 @@ const geoLines = [
   },
 ];
 
+const myIcon = L.divIcon({
+  html: <div>abs</div>,
+  iconAnchor: [22, 94],
+});
+
 export default function Leaflet() {
   const initLeafletMap = (latitude, longtitude) => {
     const map = L.map('leaflet-map').fitWorld(); //setView([latitude, longtitude], 13);
@@ -128,64 +135,79 @@ export default function Leaflet() {
             `<div>${names[index]}</div><div>纬度: ${latitude}</div><div>经度: ${longitude}</div>`,
           );
       });
-      const curvePaths = ['M', latlngs[0]];
-      for (let i = 1; i < latlngs.length; i++) {
-        const [prev, curr] = [latlngs[i - 1], latlngs[i]];
-        const c1 = [
-          (prev[0] + curr[0]) / 2 + (curr[1] - prev[1]) * 0.02,
-          (prev[1] + curr[1]) / 2 - (curr[0] - prev[0]) * 0.02,
-        ];
-        const c2 = [
-          (prev[0] + curr[0]) / 2 + (curr[1] - prev[1]) * 0.01,
-          (prev[1] + curr[1]) / 2 - (curr[0] - prev[0]) * 0.01,
-        ];
-        curvePaths.push('C', c1, c2, curr);
-      }
 
-      // version incompatible
-      // L.curve(curvePaths, {
-      //   color: 'red',
-      //   weight: 3,
-      //   dashArray: '5,5',
-      //   lineCap: 'round',
-      // }).addTo(map);
+      // const polyline = L.polyline(latlngs).addTo(map);
+      // drawSvgCurve(map);
+      // map.fitBounds(polyline.getBounds());
 
-      const polyline = L.polyline(latlngs).addTo(map);
-      map.fitBounds(polyline.getBounds());
+      map.on('move zoom', () => {
+        console.log('move zoom');
+        drawSvgCurve(map);
+      });
+
+      map.whenReady(() => {
+        drawSvgCurve(map);
+      });
     });
+  };
 
-    // const commonPopup = L.popup();
-    // map.on('click', (e) => {
-    //   console.log(e);
-    //   commonPopup
-    //     .setLatLng(e.latlng)
-    //     .setContent('click Position ' + e.latlng.toString())
-    //     .openOn(map);
-    // });
+  const calcPath = (map, startPoint, endPoint) => {
+    const latMid = (startPoint[0] + endPoint[0]) / 2; // 纬度中点
+    const lngMid = (startPoint[1] + endPoint[1]) / 2; // 经度中点
+    const gap = Math.abs(startPoint[1] - endPoint[1]) / 3; // 基于经度差计算偏移量
 
-    // const marker = L.marker([latitude, longtitude]).addTo(map);
+    // 计算两个控制点（沿垂直于两点连线的方向偏移）
+    const c1Point = [latMid + gap / 2, lngMid - gap]; // 上控制点
+    const c2Point = [latMid - gap / 2, lngMid + gap]; // 下控制点
 
-    // const circle = L.circle([latitude, longtitude], {
-    //   color: 'red',
-    //   fillColor: '#f03',
-    //   fillOpacity: 0.5,
-    //   radius: 500,
-    // }).addTo(map);
+    // 转换为像素坐标
+    const start = map.latLngToLayerPoint(startPoint);
+    const end = map.latLngToLayerPoint(endPoint);
+    const c1 = map.latLngToLayerPoint(c1Point);
+    const c2 = map.latLngToLayerPoint(c2Point);
 
-    // const polygon = L.polygon([
-    //   [latitude + 0.1, longtitude + 0.1],
-    //   [latitude - 0.1, longtitude + 0.1],
-    //   [latitude, longtitude],
-    // ]).addTo(map);
+    return `M ${start.x} ${start.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${end.x} ${end.y}`;
+  };
 
-    // marker.bindPopup('<b>Hello</b><br>I am a popup</br>');
-    // circle.bindPopup('i am a circle');
-    // polygon.bindPopup('i am a polygon');
+  const paths = useRef([]);
+  const svgRenderer = useRef(null);
+  const drawSvgCurve = (map) => {
+    const latlngs = Object.values(routes).map(({ latitude, longitude }) => [
+      latitude,
+      longitude,
+    ]);
+    if (paths.current && paths.current.length > 0) {
+      paths.current.forEach((path) => {
+        path.remove();
+      });
+    }
+    if (!svgRenderer.current) {
+      svgRenderer.current = L.svg().addTo(map);
+    }
+    for (let i = 1; i < latlngs.length; i++) {
+      const pathData = calcPath(map, latlngs[i - 1], latlngs[i]);
+      const path = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'path',
+      );
+      paths.current.push(path);
 
-    // const popup = L.popup()
-    //   .setLatLng([latitude, longtitude - 0.1])
-    //   .setContent('i am a popup')
-    //   .openOn(map);
+      path.setAttribute(
+        'style',
+        `stroke-width: 5px; fill: transparent; stroke-linecap: round; stroke: ${colors.normal[i % 8]};`,
+      );
+      path.setAttribute('d', pathData);
+
+      // stroke-dasharray
+      // const animation = document.createElement('animation');
+      // animation.setAttribute('from', '0');
+      // animation.setAttribute('to', '9');
+      // animation.setAttribute('duration', '1s');
+      // animation.setAttribute('repeatCount', 'indefinite');
+      // path.appendChild(animation);
+
+      svgRenderer.current._container.appendChild(path);
+    }
   };
 
   useEffect(() => {
