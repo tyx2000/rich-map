@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Carrot } from 'lucide-react';
 import colors from '../../constances/colors';
 
 const routes = {
@@ -91,11 +90,6 @@ const geoLines = [
   },
 ];
 
-const myIcon = L.divIcon({
-  html: <div>abs</div>,
-  iconAnchor: [22, 94],
-});
-
 export default function Leaflet() {
   const initLeafletMap = (latitude, longtitude) => {
     const map = L.map('leaflet-map').fitWorld(); //setView([latitude, longtitude], 13);
@@ -129,11 +123,22 @@ export default function Leaflet() {
         longitude,
       ]);
       latlngs.forEach(([latitude, longitude], index) => {
-        L.marker([latitude, longitude])
+        const marker = L.marker([latitude, longitude], {
+          draggable: true,
+          icon: L.divIcon({
+            className: '',
+            html: `<div style="width: 14px; height: 14px; border-radius: 6px; background-color: ${colors.normal[index % 8]};"></div>`,
+          }),
+        })
           .addTo(map)
           .bindTooltip(
             `<div>${names[index]}</div><div>纬度: ${latitude}</div><div>经度: ${longitude}</div>`,
           );
+
+        marker.on('dragend', (e) => {
+          const latlng = e.target._latlng;
+          console.log({ latlng });
+        });
       });
 
       // const polyline = L.polyline(latlngs).addTo(map);
@@ -147,6 +152,15 @@ export default function Leaflet() {
 
       map.whenReady(() => {
         drawSvgCurve(map);
+      });
+
+      map.on('click', () => {
+        const randomLatlng =
+          latlngs[Math.floor(Math.random() * latlngs.length)];
+        map.flyTo(randomLatlng, 10, {
+          animate: true,
+          duration: 1.5,
+        });
       });
     });
   };
@@ -194,17 +208,27 @@ export default function Leaflet() {
 
       path.setAttribute(
         'style',
-        `stroke-width: 5px; fill: transparent; stroke-linecap: round; stroke: ${colors.normal[i % 8]};`,
+        `
+          stroke-width: 2px;
+          fill: transparent;
+          stroke-linecap: round;
+          stroke-dasharray: 15, 8;
+          stroke: ${colors.normal[i % 8]};
+        `,
       );
       path.setAttribute('d', pathData);
 
       // stroke-dasharray
-      // const animation = document.createElement('animation');
-      // animation.setAttribute('from', '0');
-      // animation.setAttribute('to', '9');
-      // animation.setAttribute('duration', '1s');
-      // animation.setAttribute('repeatCount', 'indefinite');
-      // path.appendChild(animation);
+      const animation = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'animate',
+      );
+      animation.setAttribute('attributeName', 'stroke-dashoffset');
+      animation.setAttribute('from', '23');
+      animation.setAttribute('to', '0');
+      animation.setAttribute('dur', '0.2s');
+      animation.setAttribute('repeatCount', 'indefinite');
+      path.appendChild(animation);
 
       svgRenderer.current._container.appendChild(path);
     }
