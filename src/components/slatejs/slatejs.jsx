@@ -177,7 +177,7 @@ const initialInitialValue =
   typeof window === 'undefined' ? [] : getInitialValue(initialConfig.blocks);
 const createEditor = (config) => {
   const editor = withCustomerElement(
-    withHistory(withReact(creaetSlateEditor())),
+    withHistory(withReact(creaetSlateEditor()), { maxHistory: 10 }),
   );
   // enable chunking, control the number of nodes per lowest-level chunk for a given parent node
   // in most circumstances, setting the chunk size to 1000 for the editor and null for all other ancestors works well

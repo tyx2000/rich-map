@@ -1,4 +1,5 @@
 import { Editor, Element, Range, Transforms } from 'slate';
+import { HistoryEditor } from 'slate-history';
 
 const slateCommand = {
   isLinkActive(editor) {
@@ -98,11 +99,47 @@ const slateCommand = {
       { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) },
     );
   },
+  undoOrRedo(editor, action) {
+    const isHistoryEditor = HistoryEditor.isHistoryEditor(editor);
+    if (isHistoryEditor) {
+      const { undos, redos } = editor.history;
+      if (action === 'undo' && undos.length > 0) {
+        editor.undo();
+      }
+      if (action === 'redo' && redos.length > 0) {
+        editor.redo();
+      }
+    }
+  },
+  toggleHeader(editor, value) {
+    console.log(value, editor.selection);
+    if (!editor.selection) return;
+    const { anchor, focus } = editor.selection;
+    const start = Range.start(editor.selection),
+      end = Range.end(editor.selection);
+    const [startMatchNode] = Editor.nodes(editor, {
+      at: start.path,
+      match: (n) => Editor.isBlock(editor, n),
+      mode: 'highest',
+    });
+    const [endMatchNode] = Editor.nodes(editor, {
+      at: end.path,
+      match: (n) => Editor.isBlock(editor, n),
+      mode: 'highest',
+    });
+
+    if (!startMatchNode || !endMatchNode) return;
+
+    const startIndex = startMatchNode[1][0],
+      endIndex = endMatchNode[1][0];
+
+    console.log(startIndex, endIndex, { startMatchNode, endMatchNode });
+  },
   toggleMark(editor, formatLabel, formatValue) {
     const marks = Editor.marks(editor);
     const isActive = marks ? marks[formatLabel] === formatValue : false;
     if (isActive) {
-      Editor.removeMark(editor, format);
+      Editor.removeMark(editor, formatLabel);
     } else {
       Editor.addMark(editor, formatLabel, formatValue);
     }

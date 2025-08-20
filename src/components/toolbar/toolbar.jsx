@@ -140,8 +140,13 @@ export default function Toolbar({ hovering }) {
     setSelectedToolName('');
     console.log(name, value);
     switch (name) {
+      case 'undo':
+      case 'redo':
+        slateCommand.undoOrRedo(editor, name);
+        return;
+
       case 'header':
-        slateCommand.toggleMark(editor, value, true);
+        slateCommand.toggleHeader(editor, value);
         return;
 
       case 'bold':
