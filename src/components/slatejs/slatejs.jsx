@@ -27,17 +27,17 @@ import PerformanceControls from '../performanceControls/index.jsx';
 const defaultValue = [
   { type: 'title', children: [{ text: 'Enforce you layout' }] },
   { type: 'paragraph', children: [{ text: 'below checklist' }] },
-  {
-    type: 'checklistItem',
-    checked: false,
-    children: [{ text: 'slide to left' }],
-  },
-  {
-    type: 'image',
-    url: 'https://i.imgur.com/VZewSe2.jpeg',
-    name: 'strange stone',
-    children: [{ text: '' }],
-  },
+  // {
+  //   type: 'checklistItem',
+  //   checked: false,
+  //   children: [{ text: 'slide to left' }],
+  // },
+  // {
+  //   type: 'image',
+  //   url: 'https://i.imgur.com/VZewSe2.jpeg',
+  //   name: 'strange stone',
+  //   children: [{ text: '' }],
+  // },
   // {
   //   type: 'video',
   //   url: 'https://player.vimeo.com/video/26689853',
@@ -48,61 +48,61 @@ const defaultValue = [
   //   type: 'editableVoid',
   //   children: [{ text: '' }],
   // },
-  {
-    type: 'table',
-    children: [
-      {
-        type: 'table-row',
-        children: [
-          {
-            type: 'table-cell',
-            children: [{ text: '1', bold: true }],
-          },
-          {
-            type: 'table-cell',
-            children: [{ text: '2', underline: true }],
-          },
-          {
-            type: 'table-cell',
-            children: [{ text: '3', strikethrough: true }],
-          },
-          {
-            type: 'table-cell',
-            children: [{ text: '4', italic: true }],
-          },
-          {
-            type: 'table-cell',
-            children: [{ text: '5', bold: true, italic: true }],
-          },
-        ],
-      },
-      {
-        type: 'table-row',
-        children: [
-          {
-            type: 'table-cell',
-            children: [{ text: 'cccccccccc' }],
-          },
-          {
-            type: 'table-cell',
-            children: [{ text: 'cccccccccc' }],
-          },
-          {
-            type: 'table-cell',
-            children: [{ text: 'cccccccccc' }],
-          },
-          {
-            type: 'table-cell',
-            children: [{ text: 'cccccccccc' }],
-          },
-          {
-            type: 'table-cell',
-            children: [{ text: 'cccccccccc' }],
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   type: 'table',
+  //   children: [
+  //     {
+  //       type: 'table-row',
+  //       children: [
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: '1', bold: true }],
+  //         },
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: '2', underline: true }],
+  //         },
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: '3', strikethrough: true }],
+  //         },
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: '4', italic: true }],
+  //         },
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: '5', bold: true, italic: true }],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       type: 'table-row',
+  //       children: [
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: 'cccccccccc' }],
+  //         },
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: 'cccccccccc' }],
+  //         },
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: 'cccccccccc' }],
+  //         },
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: 'cccccccccc' }],
+  //         },
+  //         {
+  //           type: 'table-cell',
+  //           children: [{ text: 'cccccccccc' }],
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
 ];
 
 const searchParams =

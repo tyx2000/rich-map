@@ -23,7 +23,7 @@ export default function SlateElement(props) {
     contentVisibility,
     showSelectedHeadings,
   } = props;
-  console.log('element', element);
+  console.log({ element });
   const { type, align } = element || {};
   const style = {
     contentVisibility: contentVisibility ? 'auto' : undefined,

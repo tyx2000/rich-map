@@ -149,6 +149,10 @@ export default function Toolbar({ hovering }) {
         slateCommand.toggleHeader(editor, value);
         return;
 
+      case 'fontSize':
+        slateCommand.toggleMark(editor, 'fontSize', value);
+        return;
+
       case 'bold':
       case 'italic':
       case 'underline':
@@ -156,17 +160,22 @@ export default function Toolbar({ hovering }) {
         slateCommand.toggleMark(editor, name, true);
         return;
 
+      case 'code':
+        slateCommand.toggleCodeBlock(editor);
+        return;
+
       case 'color':
       case 'highlight':
         slateCommand.toggleMark(editor, name, value);
         return;
 
-      case 'code':
-        slateCommand.toggleCodeBlock(editor);
+      case 'align':
+        slateCommand.toggleMark(editor, 'align', value);
         return;
 
       case 'list':
       case 'checklist':
+      case 'link':
       case 'table':
         // todo
         return;
@@ -180,6 +189,9 @@ export default function Toolbar({ hovering }) {
         } else {
           insertFile(name, value);
         }
+        return;
+
+      case 'comment':
         return;
     }
   };

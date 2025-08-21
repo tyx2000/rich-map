@@ -1,5 +1,5 @@
 export default function LeafElement({ attributes, children, leaf }) {
-  console.log({ leaf, children });
+  console.log({ leaf });
   if (leaf.bold) {
     children = <strong>{children}</strong>;
   }

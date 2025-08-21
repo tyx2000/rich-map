@@ -114,7 +114,6 @@ const slateCommand = {
   toggleHeader(editor, value) {
     console.log(value, editor.selection);
     if (!editor.selection) return;
-    const { anchor, focus } = editor.selection;
     const start = Range.start(editor.selection),
       end = Range.end(editor.selection);
     const [startMatchNode] = Editor.nodes(editor, {
@@ -128,12 +127,7 @@ const slateCommand = {
       mode: 'highest',
     });
 
-    if (!startMatchNode || !endMatchNode) return;
-
-    const startIndex = startMatchNode[1][0],
-      endIndex = endMatchNode[1][0];
-
-    console.log(startIndex, endIndex, { startMatchNode, endMatchNode });
+    console.log({ start, end, startMatchNode, endMatchNode });
   },
   toggleMark(editor, formatLabel, formatValue) {
     const marks = Editor.marks(editor);
