@@ -67,7 +67,10 @@ export default function ListElement(props) {
   const { attributes, children, element } = props;
   const readonly = useReadOnly();
   return (
-    <div {...attributes} style={{ display: 'flex' }}>
+    <div
+      {...attributes}
+      style={{ display: 'flex', backgroundColor: '#f1f1f1' }}
+    >
       {prefix(element.prefix)}
       <div
         contentEditable={!readonly}
@@ -76,7 +79,6 @@ export default function ListElement(props) {
           flex: 1,
           color: 'purple',
           outline: 'none',
-          borderBottom: '1px dashed red',
         }}
       >
         {children}

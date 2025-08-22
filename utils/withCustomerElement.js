@@ -17,6 +17,11 @@ export default function withCustomerElement(editor) {
       : isVoid(element);
   };
 
+  /**
+   * todo
+   * 回车默认会在下一行添加与上一行相同类型的元素，此时，删除 应该只是删除新添加的元素而不聚焦到上一行末尾
+   * 那么，在删除时要考虑，当元素内容被删除完，再删除时，应删除整个元素并保持光标在当前行首
+   */
   editor.deleteBackward = (...args) => {
     const { selection } = editor;
     if (selection && Range.isCollapsed(selection)) {
@@ -147,20 +152,17 @@ export default function withCustomerElement(editor) {
   //   return normalizeNode([node, path]);
   // };
 
+  // todo 通过enter跳出当前 新但是空内容 的节点
   editor.insertBreak = (...args) => {
-    const [nodes] = Editor.nodes(editor, {
-      match: (n) =>
-        !Editor.isEditor(n) && Element.isElement(n) && n.type === 'listItem',
-    });
-    console.log({ nodes });
-
-    const { selection } = editor;
-    if (selection) {
-      const [table] = Editor.nodes(editor, {
+    console.log('insert break');
+    if (!editor.selection) return;
+    if (Range.isCollapsed(editor.selection)) {
+      const [node] = Editor.nodes(editor, {
         match: (n) =>
-          !Editor.isEditor(n) & Element.isElement(n) && n.type === 'table',
+          !Editor.isEditor(n) && Element.isElement(n) && n.type === 'code',
       });
-      if (table) {
+      if (node) {
+        Transforms.insertText(editor, '\n');
         return;
       }
     }

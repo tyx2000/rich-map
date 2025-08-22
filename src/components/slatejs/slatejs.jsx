@@ -25,13 +25,18 @@ import PerformanceControls from '../performanceControls/index.jsx';
 
 // 每个对象即是element属性
 const defaultValue = [
-  { type: 'title', children: [{ text: 'Enforce you layout' }] },
+  { type: 'heading', children: [{ text: 'Enforce you layout' }] },
   { type: 'paragraph', children: [{ text: 'below checklist' }] },
-  // {
-  //   type: 'checklistItem',
-  //   checked: false,
-  //   children: [{ text: 'slide to left' }],
-  // },
+  {
+    type: 'checklist',
+    checked: false,
+    children: [{ text: 'this is a checklist item' }],
+  },
+  {
+    type: 'code',
+    children: [{ text: 'console.log("Hello, world!");' }],
+  },
+  { type: 'paragraph', children: [{ text: 'below checklist' }] },
   // {
   //   type: 'image',
   //   url: 'https://i.imgur.com/VZewSe2.jpeg',

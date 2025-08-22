@@ -4,4 +4,6 @@
   overflow: hidden auto;
   max-width: 1200px;
   padding: 50px;
+  width: 80vw;
+  border: 1px dashed #000;
 }

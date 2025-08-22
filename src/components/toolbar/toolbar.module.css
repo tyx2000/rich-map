@@ -1,4 +1,5 @@
 .toolbar {
+  width: fit-content;
   position: relative;
   display: flex;
   gap: 5px;
@@ -28,6 +29,7 @@
     .popover {
       opacity: 1;
       z-index: 30;
+      display: block;
     }
   }
   &:has(.divider) {
@@ -52,6 +54,8 @@
   background-color: #000;
   color: #fff;
   opacity: 0;
+  display: none;
+  transition: opacity 0.2s ease-in-out;
 }
 
 .options {

@@ -1,13 +1,7 @@
 import { Fragment } from 'react';
 import styles from './options.module.css';
 
-/**
- *
- * @param {fileType} image audio video
- * @param {onConfirm} confirm to insert
- * @returns
- */
-export default function InsertFile({ fileType, onSet }) {
+export default function InsertFile({ name, onSet }) {
   const handleFromLocal = () => {
     const el = document.createElement('input');
     el.type = 'file';
@@ -16,7 +10,7 @@ export default function InsertFile({ fileType, onSet }) {
       console.log('files', e.target.files);
       // filter file according to fileType
       const fileUrl = 'https://i.imgur.com/VZewSe2.jpeg';
-      onSet(fileType, fileUrl);
+      onSet(name, fileUrl);
     };
     el.oncancel = () => {
       console.log('cancel');
@@ -36,7 +30,7 @@ export default function InsertFile({ fileType, onSet }) {
       </div>
       <div
         className={styles.insertFileOption}
-        onClick={() => onSet(fileType, 'upload-via-url')}
+        onClick={() => onSet(name, 'upload-via-url')}
       >
         Insert via url
       </div>

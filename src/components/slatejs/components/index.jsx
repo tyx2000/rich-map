@@ -8,12 +8,14 @@ import ListElement from './listElement';
 import { useSelected } from 'slate-react';
 import { GripVertical } from 'lucide-react';
 import styles from './element.module.css';
+import Heading from './heading';
+import LinkElement from './linkElement';
 
-const Heading = ({ styleProps, showSelectedHeadings = false, ...props }) => {
-  const selected = showSelectedHeadings ? useSelected() : false;
-  const style = { ...styleProps, color: selected ? 'green' : undefined };
-  return <h1 {...props} selected={selected} style={style}></h1>;
-};
+// const Heading = ({ styleProps, showSelectedHeadings = false, ...props }) => {
+//   const selected = showSelectedHeadings ? useSelected() : false;
+//   const style = { ...styleProps, color: selected ? 'green' : undefined };
+//   return <h1 {...props} selected={selected} style={style}></h1>;
+// };
 
 export default function SlateElement(props) {
   const {
@@ -24,21 +26,23 @@ export default function SlateElement(props) {
     showSelectedHeadings,
   } = props;
   console.log({ element });
-  const { type, align } = element || {};
+  const { type, align, level } = element || {};
   const style = {
     contentVisibility: contentVisibility ? 'auto' : undefined,
   };
   const renderElement = () => {
     switch (type) {
-      case 'heading-one':
-        return <h1>{children}</h1>;
-      case 'title':
-        return <h2 style={{ textAlign: align || 'left' }}>{children}</h2>;
+      case 'heading':
+        return (
+          <Heading level={level || 'h2'} align={align}>
+            {children}
+          </Heading>
+        );
       case 'paragraph':
         return <p style={{ textAlign: align || 'left' }}>{children}</p>;
       case 'code':
         return <CodeElement {...props} />;
-      case 'checklistItem':
+      case 'checklist':
         return <ChecklistItemElement {...props} />;
       case 'image':
         return <ImageElement {...props} />;
@@ -46,8 +50,10 @@ export default function SlateElement(props) {
         return <VideoElement {...props} />;
       case 'editableVoid':
         return <EditableVoidElement {...props} />;
-      case 'listItem':
+      case 'list':
         return <ListElement {...props} />;
+      case 'link':
+        return <LinkElement {...props} />;
       case 'table':
         return (
           <table
