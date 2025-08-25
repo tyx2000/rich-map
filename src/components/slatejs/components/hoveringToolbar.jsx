@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react';
-import { Editor, Range, Text, Transforms } from 'slate';
+import { Editor, Range } from 'slate';
 import { useFocused, useSlate } from 'slate-react';
-import slateCommand from '../../../../utils/slateCommand';
 import Toolbar from '../../toolbar/toolbar';
 import Portal from '../../portal';
+import styles from './element.module.css';
 
-export default function HoveringToolbar() {
+export default function HoveringToolbar({
+  showCommentInput,
+  commentClickHandler,
+}) {
   const ref = useRef(null);
   const editor = useSlate();
   const focused = useFocused();
@@ -20,7 +23,8 @@ export default function HoveringToolbar() {
       !selection ||
       !focused ||
       Range.isCollapsed(selection) ||
-      Editor.string(editor, selection) === ''
+      Editor.string(editor, selection) === '' ||
+      showCommentInput
     ) {
       // el.removeAttribute('style');
       el.style.opacity = '0';
@@ -40,22 +44,13 @@ export default function HoveringToolbar() {
     <Portal>
       <div
         ref={ref}
-        style={{
-          position: 'absolute',
-          zIndex: 10,
-          top: -10000,
-          left: -10000,
-          marginTop: -6,
-          opacity: 0,
-          borderRadius: 4,
-          transition: 'opacity linear 0.3s',
-        }}
+        className={styles.hoveringTool}
         onMouseDown={(e) => {
           // just keep selection
           e.preventDefault();
         }}
       >
-        <Toolbar hovering />
+        <Toolbar hovering commentClickHandler={commentClickHandler} />
       </div>
     </Portal>
   );

@@ -4,7 +4,7 @@ import FontSize from './components/fontSize';
 import InputUrlModal from './components/inputUrlModal';
 import useClickOutside from '../../hooks/useClickOutside';
 import slateCommand from '../../../utils/slateCommand';
-import { useSlateStatic } from 'slate-react';
+import { ReactEditor, useSlateStatic } from 'slate-react';
 import {
   tools,
   hoveringTools,
@@ -30,7 +30,7 @@ const renderOptions = (name, onSet) => {
   return <OptionsComp name={name} onSet={onSet} />;
 };
 
-export default function Toolbar({ hovering }) {
+export default function Toolbar({ hovering, commentClickHandler }) {
   const editor = useSlateStatic();
   const toolbarRef = useRef(null);
   const [selectedToolName, setSelectedToolName] = useState('');
@@ -97,7 +97,7 @@ export default function Toolbar({ hovering }) {
         return;
 
       case 'link':
-        slateCommand.insertLink(editor, 'bilibili.com');
+        slateCommand.toggleLink(editor, 'https://www.bilibili.com');
         return;
       case 'table':
         // todo
@@ -115,6 +115,7 @@ export default function Toolbar({ hovering }) {
         return;
 
       case 'comment':
+        commentClickHandler();
         return;
     }
   };

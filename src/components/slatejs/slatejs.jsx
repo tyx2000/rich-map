@@ -16,6 +16,7 @@ import Toolbar from '../toolbar/toolbar.jsx';
 import { serialize, deserialize } from '../../../utils/helper.js';
 import SlateElement from './components/index.jsx';
 import HoveringToolbar from './components/hoveringToolbar.jsx';
+import CommentInput from './components/commentInput.jsx';
 import { withHistory } from 'slate-history';
 import withCustomerElement from '../../../utils/withCustomerElement.js';
 import styles from './slatejs.module.css';
@@ -36,7 +37,18 @@ const defaultValue = [
     type: 'code',
     children: [{ text: 'console.log("Hello, world!");' }],
   },
-  { type: 'paragraph', children: [{ text: 'below checklist' }] },
+  {
+    type: 'paragraph',
+    children: [
+      {
+        text: 'below checklist below checklist below checklist below checklist below checklist below checklist below checklist below checklist below checklist',
+      },
+    ],
+  },
+  // {
+  //   type: 'badge',
+  //   children: [{ text: 'block badge' }],
+  // },
   // {
   //   type: 'image',
   //   url: 'https://i.imgur.com/VZewSe2.jpeg',
@@ -405,6 +417,19 @@ export default function Slatejs({ sharedType, provider }) {
 
   const restoreSelection = () => {};
 
+  const [showCommentInput, setShowCommentInput] = useState(false);
+  const commentClickHandler = () => {
+    slateCommand.wrapNodeWithComment(editor);
+    setShowCommentInput(true);
+  };
+  const onComment = (val) => {
+    console.log({ val });
+    setShowCommentInput(false);
+    // todo 评论与对应的selection怎么存
+    // todo selection内容变动与评论同步变化
+    // todo selection被删除同步删除对应的评论
+  };
+
   return (
     <Fragment>
       {/* <PerformanceControls
@@ -432,8 +457,12 @@ export default function Slatejs({ sharedType, provider }) {
             }
           }}
         >
-          <Toolbar />
-          <HoveringToolbar />
+          <Toolbar commentClickHandler={commentClickHandler} />
+          <HoveringToolbar
+            showCommentInput={showCommentInput}
+            commentClickHandler={commentClickHandler}
+          />
+          <CommentInput onOk={onComment} showCommentInput={showCommentInput} />
           {/* <div className={styles.editableWrapper} contentEditable={false}> */}
           <Editable
             className={styles.editable}

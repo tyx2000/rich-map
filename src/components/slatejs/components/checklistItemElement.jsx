@@ -20,7 +20,10 @@ export default function ChecklistItemElement(props) {
         justifyContent: alignDirection,
       }}
     >
-      <span contentEditable={false} style={{ marginRight: 5 }}>
+      <span
+        contentEditable={false}
+        style={{ width: 26, display: 'flex', alignItems: 'center' }}
+      >
         <input
           type="checkbox"
           checked={checked}
@@ -38,7 +41,7 @@ export default function ChecklistItemElement(props) {
         contentEditable={!readonly}
         suppressContentEditableWarning
         style={{
-          color: checked ? 'red' : 'green',
+          color: checked ? 'red' : '#000',
           opacity: checked ? 0.6 : 1,
           textDecoration: checked ? 'line-through' : 'none',
           outline: 'none',

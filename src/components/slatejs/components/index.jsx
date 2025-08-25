@@ -5,11 +5,11 @@ import ImageElement from './imageElement';
 import EditableVoidElement from './editableVoidElement';
 import VideoElement from './videoElement';
 import ListElement from './listElement';
-import { useSelected } from 'slate-react';
 import { GripVertical } from 'lucide-react';
 import styles from './element.module.css';
 import Heading from './heading';
 import LinkElement from './linkElement';
+import BadgeElement from './badgeElement';
 
 // const Heading = ({ styleProps, showSelectedHeadings = false, ...props }) => {
 //   const selected = showSelectedHeadings ? useSelected() : false;
@@ -54,6 +54,8 @@ export default function SlateElement(props) {
         return <ListElement {...props} />;
       case 'link':
         return <LinkElement {...props} />;
+      case 'badge':
+        return <BadgeElement {...props} />;
       case 'table':
         return (
           <table

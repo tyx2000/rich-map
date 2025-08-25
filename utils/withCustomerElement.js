@@ -1,5 +1,7 @@
 import { Editor, Element, Point, Range, Transforms } from 'slate';
 import { insertImage, isImageUrl } from './helper';
+import isUrl from 'is-url';
+import slateCommand from './slateCommand';
 
 export default function withCustomerElement(editor) {
   const {
@@ -9,7 +11,42 @@ export default function withCustomerElement(editor) {
     isVoid,
     normalizeNode,
     insertBreak,
+    insertText,
+    isInline,
+    isElementReadOnly,
+    isSelectable,
   } = editor;
+
+  editor.isInline = (element) => {
+    return (
+      ['link', 'button', 'badge'].includes(element.type) || isInline(element)
+    );
+  };
+
+  editor.isElementReadOnly = (element) => {
+    return element.type === 'badge' || isElementReadOnly(element);
+  };
+
+  editor.isSelectable = (element) => {
+    return element.type !== 'badge' && isSelectable(element);
+  };
+
+  editor.insertText = (text) => {
+    if (text && isUrl(text)) {
+      slateCommand.wrapLink(editor, text);
+    } else {
+      insertText(text);
+    }
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData('text/plain');
+    if (text && isUrl(text)) {
+      slateCommand.wrapLink(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
 
   editor.isVoid = (element) => {
     return ['image', 'editableVoid', 'video'].includes(element.type)

@@ -2,43 +2,12 @@ import { Editor, Element, Range, Transforms } from 'slate';
 import { HistoryEditor } from 'slate-history';
 
 const slateCommand = {
-  isLinkActive(editor) {
-    const [link] = Editor.nodes(editor, {
-      match: (n) =>
-        !Editor.isEditor(n) && Element.isElement(n) && n.type === 'link',
-    });
-    return !!link;
-  },
   isButtonActive(editor) {
     const [button] = Editor.nodes(editor, {
       match: (n) =>
         !Editor.isEditor(n) && Element.isElement(n) && n.type === 'button',
     });
     return !!button;
-  },
-  wrapLink(editor, url) {
-    if (this.isLinkActive(editor)) {
-      this.unwrapLink(editor);
-    }
-    const { selection } = editor;
-    const isCollapsed = selection && Range.isCollapsed(selection);
-    const link = {
-      type: 'link',
-      url,
-      children: isCollapsed ? [{ text: url }] : [],
-    };
-    if (isCollapsed) {
-      Transforms.insertNodes(editor, link);
-    } else {
-      Transforms.wrapNodes(editor, link, { split: true });
-      Transforms.collapse(editor, { edge: 'end' });
-    }
-  },
-  unwrapLink(editor) {
-    Transforms.unwrapNodes(editor, {
-      match: (n) =>
-        !Editor.isEditor(n) && Element.isElement(n) && n.type === 'link',
-    });
   },
   wrapButton(editor) {
     if (this.isButtonActive(editor)) {
@@ -62,11 +31,6 @@ const slateCommand = {
       match: (n) =>
         !Editor.isEditor(n) && Element.isElement(n) && n.type === 'button',
     });
-  },
-  insertLink(editor, url) {
-    if (editor.selection) {
-      this.wrapLink(editor, url);
-    }
   },
   insertButton(editor) {
     if (editor.selection) {
@@ -218,6 +182,44 @@ const slateCommand = {
       });
     } else {
       return;
+    }
+  },
+  // 为选区添加或移除 链接
+  toggleLink(editor, url) {
+    if (!editor.selection) return;
+    const [node] = Editor.nodes(editor, {
+      match: (n) =>
+        !Editor.isEditor(n) && Element.isElement(n) && n.type === 'link',
+    });
+    if (node) {
+      Transforms.unwrapNodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) && Element.isElement(n) && n.type === 'link',
+      });
+    } else {
+      const isCollapsed = Range.isCollapsed(editor.selection);
+      const link = {
+        type: 'link',
+        url,
+        children: isCollapsed ? [{ text: url }] : [],
+      };
+      if (isCollapsed) {
+        Transforms.insertNodes(editor, link);
+      } else {
+        Transforms.wrapNodes(editor, link, { split: true });
+        Transforms.collapse(editor, { edge: 'end' });
+      }
+    }
+  },
+  wrapNodeWithComment(editor) {
+    if (!editor.selection || Range.isCollapsed(editor.selection)) return;
+    const marks = Editor.marks(editor);
+    console.log({ marks });
+    const isAttachComment = marks['attachComment'];
+    if (isAttachComment) {
+      Editor.removeMark(editor, 'attachComment');
+    } else {
+      Editor.addMark(editor, 'attachComment', true);
     }
   },
 };

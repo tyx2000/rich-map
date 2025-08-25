@@ -29,15 +29,17 @@ export default function LeafElement({ attributes, children, leaf }) {
     children = <h5>{children}</h5>;
   }
 
+  const style = {
+    color: leaf.color || (leaf.attachComment ? '#C10007' : '') || '',
+    backgroundColor:
+      leaf.highlight || (leaf.attachComment ? '#FFE2E2' : '') || '',
+  };
+
   return (
     <span
       {...attributes}
       {...(leaf.highlight && { 'data-cy': 'search-highlight' })}
-      style={{
-        backgroundColor: leaf.highlight || '',
-        color: leaf.color || '',
-      }}
-      // style={{backgroundColor: leaf.highlight && '#ffeeba'}}
+      style={style}
     >
       {children}
     </span>

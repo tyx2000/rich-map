@@ -1,20 +1,17 @@
+import styles from './element.module.css';
+
 export default function LinkElement(props) {
   console.log(props);
+  const { attributes, element, children } = props;
+  const { url } = element;
   return (
-    <a
-      href="google.com"
-      {...props.attributes}
-      style={{
-        color: 'purple',
-        fontSize: 14,
-        backgroundColor: '#f1f1f1',
-        padding: '3px 5px',
-        borderRadius: 2,
-        textDecoration: 'underline',
-        cursor: 'pointer',
-      }}
+    <span
+      title={url || ''}
+      {...attributes}
+      className={styles.linkWrapper}
+      // onClick={() => url && window.open(url)}
     >
-      click to google
-    </a>
+      {children}
+    </span>
   );
 }
