@@ -193,15 +193,13 @@ export default function withCustomerElement(editor) {
   editor.insertBreak = (...args) => {
     console.log('insert break');
     if (!editor.selection) return;
-    if (Range.isCollapsed(editor.selection)) {
-      const [node] = Editor.nodes(editor, {
-        match: (n) =>
-          !Editor.isEditor(n) && Element.isElement(n) && n.type === 'code',
-      });
-      if (node) {
-        Transforms.insertText(editor, '\n');
-        return;
-      }
+    const [currentNode] = Editor.nodes(editor, {
+      match: (n) => !Editor.isEditor(n) && Element.isElement(n),
+    });
+    console.log(currentNode);
+    if (currentNode.type === 'code') {
+      Transforms.insertText(editor, '\n');
+      return;
     }
 
     insertBreak(...args);

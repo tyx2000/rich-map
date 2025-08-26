@@ -14,7 +14,7 @@ export default function CommentInput({ showCommentInput, onOk }) {
       const domRange = domSelection.getRangeAt(0);
       const offset = domRange.getBoundingClientRect();
       el.style.opacity = '1';
-      el.style.top = `${offset.top + window.pageYOffset + el.offsetHeight}px`;
+      el.style.top = `${offset.top + window.pageYOffset + offset.height}px`;
       el.style.left = `${offset.left + window.pageXOffset - el.offsetWidth / 2 + offset.width / 2}px`;
     } else {
       el.style.opacity = '0';
@@ -32,12 +32,14 @@ export default function CommentInput({ showCommentInput, onOk }) {
       >
         <input
           type="text"
+          name="comment"
           value={comment}
           onChange={(e) => {
             setComment(e.target.value);
           }}
         />
         <button
+          type="button"
           onClick={() => {
             onOk(comment);
             setComment('');

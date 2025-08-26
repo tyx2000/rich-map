@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import {
   createEditor as creaetSlateEditor,
   Editor,
@@ -7,6 +7,7 @@ import {
   Point,
   Element,
   Text,
+  Range,
 } from 'slate';
 import { Slate, withReact, Editable } from 'slate-react';
 import slateCommand from '../../../utils/slateCommand.js';
@@ -269,6 +270,29 @@ export default function Slatejs({ sharedType, provider }) {
     });
   });
 
+  useEffect(() => {
+    const keyDownHandler = (e) => {
+      if (editor.selection) {
+        const [node] = Editor.nodes(editor, {
+          at: editor.selection,
+          match: (n) =>
+            !Editor.isEditor(n) && Element.isElement(n) && n.type === 'code',
+        });
+        if (node && e.key === 'Tab') {
+          e.preventDefault();
+          Transforms.insertText(editor, '    ');
+        }
+      }
+      if (e.key === 'Tab') {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener('keydown', keyDownHandler);
+    return () => {
+      document.removeEventListener('keydown', keyDownHandler);
+    };
+  }, []);
+
   // useEffect(() => {
   //   if (collaborative) {
   //     YjsEditor.connect(editor);
@@ -417,6 +441,37 @@ export default function Slatejs({ sharedType, provider }) {
 
   const restoreSelection = () => {};
 
+  const handleSelectionChange = (selection) => {
+    setShowCommentInput(false);
+    if (selection) {
+      console.log(selection);
+      // anchor.path 开始节点路径 anchor.offset 在开始节点中的偏移
+      // focus.path 结束节点路径 focus.offset 在结束节点中的偏移
+      const { anchor, focus } = selection;
+      const isCollapsed = Range.isCollapsed(selection);
+      const [node] = Editor.nodes(editor, {
+        at: selection,
+        match: (n) => !Editor.isEditor(n) && Element.isElement(n),
+      });
+      if (node) {
+        const [element, path] = node;
+        const children = element.children;
+        if (isCollapsed) {
+          let child =
+            children.length > 1 ? children[anchor.path[1]] : children[0];
+          // console.log('child', child);
+        } else {
+          let startChild =
+            children.length > 1 ? children[anchor.path[1]] : children[0];
+          let endChild =
+            children.length > 1 ? children[focus.path[1]] : children[0];
+          // console.log('startChild', startChild);
+          // console.log('endChild', endChild);
+        }
+      }
+    }
+  };
+
   const [showCommentInput, setShowCommentInput] = useState(false);
   const commentClickHandler = () => {
     slateCommand.wrapNodeWithComment(editor);
@@ -456,6 +511,7 @@ export default function Slatejs({ sharedType, provider }) {
               localStorage.setItem('content-serialize', serialize(value));
             }
           }}
+          onSelectionChange={handleSelectionChange}
         >
           <Toolbar commentClickHandler={commentClickHandler} />
           <HoveringToolbar
