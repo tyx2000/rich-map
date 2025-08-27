@@ -139,7 +139,7 @@ const slateCommand = {
   },
   // 触发或还原list checklist
   // todo 将节点整体转换成 list checklist 且遵循原节点的样式
-  // todo 带顺序标识的 listitem 标识怎么没递增，删除 listitem 标识自动变化
+  // todo 带顺序标识的 listitem 标识怎么递增，删除 listitem 标识自动变化
   toggleList(editor, name, value) {
     const targetNodes = this.getHighestTargetNodes(editor);
     if (targetNodes.length > 0) {
@@ -211,15 +211,14 @@ const slateCommand = {
       }
     }
   },
-  wrapNodeWithComment(editor) {
-    if (!editor.selection || Range.isCollapsed(editor.selection)) return;
+  // 输入评论时 添加选区标记
+  // 添加评论时 合并之前评论
+  // 根据 comments 是否为空 判断是否需要去掉选区标记
+  toggleComment(editor, comment) {
     const marks = Editor.marks(editor);
-    console.log({ marks });
-    const isAttachComment = marks['attachComment'];
-    if (isAttachComment) {
-      Editor.removeMark(editor, 'attachComment');
+    const isActive = marks ? !!marks.comments : false;
+    if (isActive) {
     } else {
-      Editor.addMark(editor, 'attachComment', true);
     }
   },
 };

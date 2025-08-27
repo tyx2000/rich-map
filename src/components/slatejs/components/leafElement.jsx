@@ -1,5 +1,7 @@
+import styles from './element.module.css';
+
 export default function LeafElement({ attributes, children, leaf }) {
-  console.log({ leaf });
+  console.log(leaf);
   if (leaf.bold) {
     children = <strong>{children}</strong>;
   }
@@ -30,9 +32,34 @@ export default function LeafElement({ attributes, children, leaf }) {
   }
 
   const style = {
-    color: leaf.color || (leaf.attachComment ? '#C10007' : '') || '',
-    backgroundColor:
-      leaf.highlight || (leaf.attachComment ? '#FFE2E2' : '') || '',
+    color: leaf.color || (leaf.comments ? '#C10007' : '') || '',
+    backgroundColor: leaf.highlight || (leaf.comments ? '#FFE2E2' : '') || '',
+    textDecorationLine: leaf.comments ? 'grammar-error' : '',
+  };
+
+  const handleClickLeaf = () => {
+    console.log('clickLeaf', leaf);
+    const el = document.getElementById('commentContainer');
+    if (el) return;
+    if (leaf.attachComment) {
+      let comments = [];
+      Object.entries(leaf).forEach(([k, v]) => {
+        if (k.includes('comment')) {
+          comments.push({ key: k, value: v });
+        }
+      });
+      const commentContainer = document.createElement('div');
+      commentContainer.id = 'commentContainer';
+      commentContainer.className = styles.commentContainer;
+      document.body.appendChild(commentContainer);
+
+      comments.forEach(({ key, value }) => {
+        const comment = document.createElement('div');
+        comment.className = styles.comment;
+        comment.innerHTML = `<div class=${styles.author}>${key}</div><div class=${styles.content}>${value}</div>`;
+        commentContainer.appendChild(comment);
+      });
+    }
   };
 
   return (
@@ -40,6 +67,7 @@ export default function LeafElement({ attributes, children, leaf }) {
       {...attributes}
       {...(leaf.highlight && { 'data-cy': 'search-highlight' })}
       style={style}
+      onClick={handleClickLeaf}
     >
       {children}
     </span>

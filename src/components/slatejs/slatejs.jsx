@@ -273,18 +273,20 @@ export default function Slatejs({ sharedType, provider }) {
   useEffect(() => {
     const keyDownHandler = (e) => {
       if (editor.selection) {
-        const [node] = Editor.nodes(editor, {
+        const [codeNode] = Editor.nodes(editor, {
           at: editor.selection,
-          match: (n) =>
-            !Editor.isEditor(n) && Element.isElement(n) && n.type === 'code',
+          match: (n) => n.type === 'code',
         });
-        if (node && e.key === 'Tab') {
+        if (codeNode && e.key === 'Tab') {
           e.preventDefault();
           Transforms.insertText(editor, '    ');
         }
-      }
-      if (e.key === 'Tab') {
-        e.preventDefault();
+        if (e.key === 'Escape') {
+          // esc 根据情况是否去除选区标记
+          slateCommand.toggleComment(editor);
+          Transforms.collapse(editor, { edge: 'end' });
+          setShowCommentInput(false);
+        }
       }
     };
     document.addEventListener('keydown', keyDownHandler);
@@ -444,7 +446,6 @@ export default function Slatejs({ sharedType, provider }) {
   const handleSelectionChange = (selection) => {
     setShowCommentInput(false);
     if (selection) {
-      console.log(selection);
       // anchor.path 开始节点路径 anchor.offset 在开始节点中的偏移
       // focus.path 结束节点路径 focus.offset 在结束节点中的偏移
       const { anchor, focus } = selection;
@@ -459,7 +460,7 @@ export default function Slatejs({ sharedType, provider }) {
         if (isCollapsed) {
           let child =
             children.length > 1 ? children[anchor.path[1]] : children[0];
-          // console.log('child', child);
+          console.log('child', child);
         } else {
           let startChild =
             children.length > 1 ? children[anchor.path[1]] : children[0];
@@ -474,12 +475,23 @@ export default function Slatejs({ sharedType, provider }) {
 
   const [showCommentInput, setShowCommentInput] = useState(false);
   const commentClickHandler = () => {
-    slateCommand.wrapNodeWithComment(editor);
+    const commentContainer = document.getElementById('commentContainer');
+    if (commentContainer) {
+      commentContainer.remove();
+    }
+    // 输入评论添加选区标记
+    slateCommand.toggleComment(editor);
     setShowCommentInput(true);
   };
   const onComment = (val) => {
     console.log({ val });
     setShowCommentInput(false);
+    if (!val) {
+      slateCommand.toggleComment(editor);
+      Transforms.collapse(editor, { edge: 'end' });
+    } else {
+      slateCommand.toggleComment(editor, val);
+    }
     // todo 评论与对应的selection怎么存
     // todo selection内容变动与评论同步变化
     // todo selection被删除同步删除对应的评论
