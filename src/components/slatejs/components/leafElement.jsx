@@ -1,7 +1,8 @@
+import { getSelectionOffset } from '../../../../utils/helper';
 import styles from './element.module.css';
 
 export default function LeafElement({ attributes, children, leaf }) {
-  console.log(leaf);
+  leaf.comments && console.log(leaf);
   if (leaf.bold) {
     children = <strong>{children}</strong>;
   }
@@ -38,27 +39,36 @@ export default function LeafElement({ attributes, children, leaf }) {
   };
 
   const handleClickLeaf = () => {
-    console.log('clickLeaf', leaf);
     const el = document.getElementById('commentContainer');
     if (el) return;
-    if (leaf.attachComment) {
-      let comments = [];
-      Object.entries(leaf).forEach(([k, v]) => {
-        if (k.includes('comment')) {
-          comments.push({ key: k, value: v });
-        }
-      });
+    if (leaf.comments) {
       const commentContainer = document.createElement('div');
       commentContainer.id = 'commentContainer';
       commentContainer.className = styles.commentContainer;
+      const offset = getSelectionOffset();
+      commentContainer.style.top = `${offset.top + window.pageYOffset + offset.height}px`;
+      commentContainer.style.left = `${offset.left + window.pageXOffset - commentContainer.offsetWidth / 2 + offset.width / 2}px`;
       document.body.appendChild(commentContainer);
 
-      comments.forEach(({ key, value }) => {
-        const comment = document.createElement('div');
-        comment.className = styles.comment;
-        comment.innerHTML = `<div class=${styles.author}>${key}</div><div class=${styles.content}>${value}</div>`;
-        commentContainer.appendChild(comment);
-      });
+      leaf.comments.forEach(
+        ({ id, timestamp, username, comment, commentFor }) => {
+          const commentEl = document.createElement('div');
+          commentEl.className = styles.comment;
+          commentEl.innerHTML = `
+          <div key=${id} class=${styles.author}>
+            ${username}&nbsp;&nbsp;
+            <span class=${styles.time}>
+              ${new Date(timestamp).toLocaleDateString() + ' ' + new Date(timestamp).toLocaleTimeString()}
+            </span>
+          </div>
+          <div class=${styles.commentFor}>${commentFor}</div>
+          <div class=${styles.content}>
+            ${comment}
+          </div>
+          `;
+          commentContainer.appendChild(commentEl);
+        },
+      );
     }
   };
 

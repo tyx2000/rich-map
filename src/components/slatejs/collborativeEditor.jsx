@@ -14,7 +14,6 @@ import {
 import { Cursors } from './multicursor';
 import { faker } from '@faker-js/faker';
 import withCustomerElement from '../../../utils/withCustomerElement';
-import Toolbar from '../toolbar/toolbar';
 
 function SlateEditor({ sharedType, provider }) {
   const editor = useMemo(() => {

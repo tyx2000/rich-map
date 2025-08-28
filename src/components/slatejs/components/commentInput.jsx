@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Portal from '../../portal';
 import styles from './element.module.css';
+import { getSelectionOffset } from '../../../../utils/helper';
 
 export default function CommentInput({ showCommentInput, onOk }) {
   const ref = useRef(null);
@@ -10,12 +11,11 @@ export default function CommentInput({ showCommentInput, onOk }) {
     const el = ref.current;
     if (!el) return;
     if (showCommentInput) {
-      const domSelection = window.getSelection();
-      const domRange = domSelection.getRangeAt(0);
-      const offset = domRange.getBoundingClientRect();
+      const offset = getSelectionOffset();
       el.style.opacity = '1';
       el.style.top = `${offset.top + window.pageYOffset + offset.height}px`;
       el.style.left = `${offset.left + window.pageXOffset - el.offsetWidth / 2 + offset.width / 2}px`;
+      document.getElementById('commentInput').focus();
     } else {
       el.style.opacity = '0';
       el.style.top = '-10000px';
@@ -31,6 +31,7 @@ export default function CommentInput({ showCommentInput, onOk }) {
         style={{}}
       >
         <input
+          id="commentInput"
           type="text"
           name="comment"
           value={comment}

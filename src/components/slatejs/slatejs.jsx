@@ -42,7 +42,7 @@ const defaultValue = [
     type: 'paragraph',
     children: [
       {
-        text: 'below checklist below checklist below checklist below checklist below checklist below checklist below checklist below checklist below checklist',
+        text: 'Redux 风格指南提出优先级 A（核心）规则，包括始终返回新状态对象以保证可预测性，reducer 必须为纯函数且无副作用，使用字符串作为 action type 并保持唯一性，将 action 创建逻辑提取到函数中，action payload 应为简单 JS 对象，以及将 reducer 逻辑拆分到多个文件并使用combineReducers合并，这些规则是保障 Redux 应用稳定性和可维护性的核心要点。',
       },
     ],
   },
@@ -272,6 +272,11 @@ export default function Slatejs({ sharedType, provider }) {
 
   useEffect(() => {
     const keyDownHandler = (e) => {
+      if (e.shiftKey && e.key === 'Enter') {
+        console.log('Shift + Enter');
+        e.preventDefault();
+        slateCommand.insertNewParagraphAtNext(editor);
+      }
       if (editor.selection) {
         const [codeNode] = Editor.nodes(editor, {
           at: editor.selection,
@@ -283,7 +288,7 @@ export default function Slatejs({ sharedType, provider }) {
         }
         if (e.key === 'Escape') {
           // esc 根据情况是否去除选区标记
-          slateCommand.toggleComment(editor);
+          slateCommand.toggleComment(editor, {});
           Transforms.collapse(editor, { edge: 'end' });
           setShowCommentInput(false);
         }
@@ -444,6 +449,10 @@ export default function Slatejs({ sharedType, provider }) {
   const restoreSelection = () => {};
 
   const handleSelectionChange = (selection) => {
+    const commentContainer = document.getElementById('commentContainer');
+    if (commentContainer) {
+      commentContainer.remove();
+    }
     setShowCommentInput(false);
     if (selection) {
       // anchor.path 开始节点路径 anchor.offset 在开始节点中的偏移
@@ -460,7 +469,7 @@ export default function Slatejs({ sharedType, provider }) {
         if (isCollapsed) {
           let child =
             children.length > 1 ? children[anchor.path[1]] : children[0];
-          console.log('child', child);
+          // console.log('child', child);
         } else {
           let startChild =
             children.length > 1 ? children[anchor.path[1]] : children[0];
@@ -473,6 +482,7 @@ export default function Slatejs({ sharedType, provider }) {
     }
   };
 
+  const [commentFor, setCommentFor] = useState('');
   const [showCommentInput, setShowCommentInput] = useState(false);
   const commentClickHandler = () => {
     const commentContainer = document.getElementById('commentContainer');
@@ -480,20 +490,22 @@ export default function Slatejs({ sharedType, provider }) {
       commentContainer.remove();
     }
     // 输入评论添加选区标记
-    slateCommand.toggleComment(editor);
+    slateCommand.toggleComment(editor, {});
     setShowCommentInput(true);
+    const selection = window.getSelection();
+    setCommentFor(selection.toString());
   };
   const onComment = (val) => {
     console.log({ val });
     setShowCommentInput(false);
     if (!val) {
-      slateCommand.toggleComment(editor);
+      slateCommand.toggleComment(editor, {});
       Transforms.collapse(editor, { edge: 'end' });
     } else {
-      slateCommand.toggleComment(editor, val);
+      slateCommand.toggleComment(editor, { comment: val, commentFor });
     }
-    // todo 评论与对应的selection怎么存
-    // todo selection内容变动与评论同步变化
+    // done todo 评论与对应的selection怎么存 --- 无需保存selection，评论添加到Leaf节点上
+    // done todo selection内容变动与评论同步变化 --- 快照，评论与内容对应，不变
     // todo selection被删除同步删除对应的评论
   };
 

@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { Editor, Element, Range, Transforms } from 'slate';
 import { HistoryEditor } from 'slate-history';
 
@@ -211,15 +212,51 @@ const slateCommand = {
       }
     }
   },
-  // 输入评论时 添加选区标记
-  // 添加评论时 合并之前评论
-  // 根据 comments 是否为空 判断是否需要去掉选区标记
-  toggleComment(editor, comment) {
+  // todo comment选区重叠时，comment合并而不是覆盖
+  // todo comment选区完全包含已经comment的选区，被包含的选区comment会被覆盖
+  // todo 选区被删除时，评论同步删除
+  toggleComment(editor, { comment, commentFor }) {
     const marks = Editor.marks(editor);
     const isActive = marks ? !!marks.comments : false;
     if (isActive) {
+      const comments = marks.comments;
+      if (comment) {
+        Editor.addMark(editor, 'comments', [
+          // 重叠部分缺失应该合并评论
+          // ...comments.filter((item) => item.commentFor === commentFor),
+          ...comments,
+          {
+            id: 'c-' + Date.now(),
+            timestamp: Date.now(),
+            username: faker.person.fullName(),
+            comment,
+            commentFor,
+          },
+        ]);
+      } else {
+        if (comments.length) {
+          return;
+        } else {
+          Editor.removeMark(editor, 'comments');
+        }
+      }
     } else {
+      Editor.addMark(editor, 'comments', []);
     }
+  },
+  // 跳出当前类型节点，在相邻处添加 paragraph
+  insertNewParagraphAtNext(editor) {
+    if (!editor.selection) return;
+    const paragraph = {
+      type: 'paragraph',
+      children: [{ text: '' }],
+    };
+    const end = Range.end(editor.selection);
+    const currentPath = end.path[0];
+    Transforms.insertNodes(editor, paragraph, {
+      at: [currentPath + 1],
+      select: true,
+    });
   },
 };
 

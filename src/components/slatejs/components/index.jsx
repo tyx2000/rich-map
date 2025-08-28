@@ -25,7 +25,7 @@ export default function SlateElement(props) {
     contentVisibility,
     showSelectedHeadings,
   } = props;
-  // console.log({ element });
+  console.log({ element });
   const { type, align, level } = element || {};
   const style = {
     contentVisibility: contentVisibility ? 'auto' : undefined,
@@ -39,7 +39,11 @@ export default function SlateElement(props) {
           </Heading>
         );
       case 'paragraph':
-        return <p style={{ textAlign: align || 'left' }}>{children}</p>;
+        return (
+          <p style={{ textAlign: align || 'left', padding: '5px 0' }}>
+            {children}
+          </p>
+        );
       case 'code':
         return <CodeElement {...props} />;
       case 'checklist':

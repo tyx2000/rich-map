@@ -189,7 +189,7 @@ export default function withCustomerElement(editor) {
   //   return normalizeNode([node, path]);
   // };
 
-  // todo 通过enter跳出当前 新但是空内容 的节点
+  // todo 通过enter跳出当前 新但是空内容 的节点 --- Shift + Enter
   editor.insertBreak = (...args) => {
     console.log('insert break');
     if (!editor.selection) return;
@@ -197,7 +197,8 @@ export default function withCustomerElement(editor) {
       match: (n) => !Editor.isEditor(n) && Element.isElement(n),
     });
     console.log(currentNode);
-    if (currentNode.type === 'code') {
+    const [element, path] = currentNode;
+    if (element.type === 'code') {
       Transforms.insertText(editor, '\n');
       return;
     }

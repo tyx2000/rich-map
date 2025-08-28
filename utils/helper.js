@@ -42,3 +42,10 @@ export function insertEditableVoid(editor) {
   };
   Transforms.insertNodes(editor, voidNode);
 }
+
+export const getSelectionOffset = () => {
+  const domSelection = window.getSelection();
+  const domRange = domSelection.getRangeAt(0);
+  const offset = domRange.getBoundingClientRect();
+  return offset;
+};
