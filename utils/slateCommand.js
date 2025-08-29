@@ -215,6 +215,7 @@ const slateCommand = {
   // todo comment选区重叠时，comment合并而不是覆盖
   // todo comment选区完全包含已经comment的选区，被包含的选区comment会被覆盖
   // todo 选区被删除时，评论同步删除
+  // todo 测试了腾讯文档，评论选区包含或是重叠均没有覆盖，各自独立 emmmmmmmmm
   toggleComment(editor, { comment, commentFor }) {
     const marks = Editor.marks(editor);
     const isActive = marks ? !!marks.comments : false;

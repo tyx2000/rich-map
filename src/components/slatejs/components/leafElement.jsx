@@ -2,7 +2,7 @@ import { getSelectionOffset } from '../../../../utils/helper';
 import styles from './element.module.css';
 
 export default function LeafElement({ attributes, children, leaf }) {
-  leaf.comments && console.log(leaf);
+  console.log(leaf);
   if (leaf.bold) {
     children = <strong>{children}</strong>;
   }
@@ -35,7 +35,7 @@ export default function LeafElement({ attributes, children, leaf }) {
   const style = {
     color: leaf.color || (leaf.comments ? '#C10007' : '') || '',
     backgroundColor: leaf.highlight || (leaf.comments ? '#FFE2E2' : '') || '',
-    textDecorationLine: leaf.comments ? 'grammar-error' : '',
+    borderBottom: leaf.comments ? '2px solid yellow' : '',
   };
 
   const handleClickLeaf = () => {
@@ -79,6 +79,11 @@ export default function LeafElement({ attributes, children, leaf }) {
       style={style}
       onClick={handleClickLeaf}
     >
+      {/* {leaf.text ? (
+        children
+      ) : (
+        <span style={{ color: '#ccc' }}>Type Something</span>
+      )} */}
       {children}
     </span>
   );

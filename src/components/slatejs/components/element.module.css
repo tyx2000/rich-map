@@ -39,18 +39,21 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 15px;
+  border: 5px solid transparent;
   border-radius: 3px;
+  transition: all linear 0.2s;
   &:hover {
+    background-color: #e0edfb;
     .dragIcon {
       opacity: 1;
     }
   }
   .dragIcon {
     width: 22px;
-    transition: all linear 0.2s;
+    transition: all linear 0.1s;
     opacity: 0;
     cursor: grab;
+    user-select: none;
   }
 }
 
@@ -61,6 +64,8 @@
   padding: 15px;
   white-space: pre-wrap;
   overflow: auto;
+  margin: 0;
+  flex: 1;
 }
 
 .linkWrapper {

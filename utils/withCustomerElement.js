@@ -191,13 +191,12 @@ export default function withCustomerElement(editor) {
 
   // todo 通过enter跳出当前 新但是空内容 的节点 --- Shift + Enter
   editor.insertBreak = (...args) => {
-    console.log('insert break');
     if (!editor.selection) return;
     const [currentNode] = Editor.nodes(editor, {
       match: (n) => !Editor.isEditor(n) && Element.isElement(n),
     });
-    console.log(currentNode);
     const [element, path] = currentNode;
+    // code 节点中 enter 换行而不是添加同类型节点
     if (element.type === 'code') {
       Transforms.insertText(editor, '\n');
       return;

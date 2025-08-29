@@ -18,6 +18,7 @@ export default function ChecklistItemElement(props) {
       style={{
         display: 'flex',
         justifyContent: alignDirection,
+        padding: '3px 0',
       }}
     >
       <span

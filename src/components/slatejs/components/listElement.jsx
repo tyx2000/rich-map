@@ -2,6 +2,7 @@ import { useReadOnly } from 'slate-react';
 
 const PrefixWrapper = ({ children }) => (
   <div
+    contentEditable={false}
     style={{
       width: 28,
       height: 28,
@@ -67,10 +68,7 @@ export default function ListElement(props) {
   const { attributes, children, element } = props;
   const readonly = useReadOnly();
   return (
-    <div
-      {...attributes}
-      style={{ display: 'flex', backgroundColor: '#f1f1f1' }}
-    >
+    <div {...attributes} style={{ display: 'flex' }}>
       {prefix(element.prefix)}
       <div
         contentEditable={!readonly}

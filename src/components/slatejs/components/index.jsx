@@ -5,12 +5,10 @@ import ImageElement from './imageElement';
 import EditableVoidElement from './editableVoidElement';
 import VideoElement from './videoElement';
 import ListElement from './listElement';
-import { GripVertical } from 'lucide-react';
-import styles from './element.module.css';
 import Heading from './heading';
 import LinkElement from './linkElement';
 import BadgeElement from './badgeElement';
-
+import DragWrapper from './dragWrapper';
 // const Heading = ({ styleProps, showSelectedHeadings = false, ...props }) => {
 //   const selected = showSelectedHeadings ? useSelected() : false;
 //   const style = { ...styleProps, color: selected ? 'green' : undefined };
@@ -25,11 +23,11 @@ export default function SlateElement(props) {
     contentVisibility,
     showSelectedHeadings,
   } = props;
-  console.log({ element });
   const { type, align, level } = element || {};
   const style = {
     contentVisibility: contentVisibility ? 'auto' : undefined,
   };
+
   const renderElement = () => {
     switch (type) {
       case 'heading':
@@ -40,7 +38,14 @@ export default function SlateElement(props) {
         );
       case 'paragraph':
         return (
-          <p style={{ textAlign: align || 'left', padding: '5px 0' }}>
+          <p
+            style={{
+              textAlign: align || 'left',
+              padding: '5px 0',
+              flex: 1,
+              wordBreak: 'break-word',
+            }}
+          >
             {children}
           </p>
         );
@@ -90,22 +95,16 @@ export default function SlateElement(props) {
         return <DefaultElement {...props} />;
     }
   };
-  return renderElement();
 
-  // return (
-  //   <div
-  //     {...attributes}
-  //     className={styles.elementWrapper}
-  //     style={{
-  //       contentVisibility: contentVisibility ? 'auto' : undefined,
-  //     }}
-  //   >
-  //     <GripVertical
-  //       size={16}
-  //       color="#737373"
-  //       className={styles.dragIcon}
-  //     />
-  //     {renderElement()}
-  //   </div>
-  // );
+  // return renderElement();
+  return (
+    <DragWrapper
+      attributes={attributes}
+      style={{
+        contentVisibility: contentVisibility ? 'auto' : undefined,
+      }}
+    >
+      {renderElement()}
+    </DragWrapper>
+  );
 }

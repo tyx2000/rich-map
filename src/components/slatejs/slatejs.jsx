@@ -24,6 +24,7 @@ import styles from './slatejs.module.css';
 import { faker } from '@faker-js/faker';
 import Chunk from './components/chunk.jsx';
 import PerformanceControls from '../performanceControls/index.jsx';
+import handleSlateKeyDown from '../../../utils/handleSlateKeyDown.js';
 
 // 每个对象即是element属性
 const defaultValue = [
@@ -272,27 +273,9 @@ export default function Slatejs({ sharedType, provider }) {
 
   useEffect(() => {
     const keyDownHandler = (e) => {
-      if (e.shiftKey && e.key === 'Enter') {
-        console.log('Shift + Enter');
-        e.preventDefault();
-        slateCommand.insertNewParagraphAtNext(editor);
-      }
-      if (editor.selection) {
-        const [codeNode] = Editor.nodes(editor, {
-          at: editor.selection,
-          match: (n) => n.type === 'code',
-        });
-        if (codeNode && e.key === 'Tab') {
-          e.preventDefault();
-          Transforms.insertText(editor, '    ');
-        }
-        if (e.key === 'Escape') {
-          // esc 根据情况是否去除选区标记
-          slateCommand.toggleComment(editor, {});
-          Transforms.collapse(editor, { edge: 'end' });
-          setShowCommentInput(false);
-        }
-      }
+      handleSlateKeyDown(e, editor, () => {
+        setShowCommentInput(false);
+      });
     };
     document.addEventListener('keydown', keyDownHandler);
     return () => {
@@ -553,6 +536,12 @@ export default function Slatejs({ sharedType, provider }) {
             renderChunk={config.chunkDivs ? renderChunk : undefined}
             renderLeaf={renderLeaf}
             // onKeyDown={handleEditorKeydown}
+            onDOMBeforeInput={(e) => {
+              console.log('sssss', e.target.closest('svg'));
+              if (e.target.closest('svg')) {
+                e.stopPropagation();
+              }
+            }}
             placeholder="emmmmmmmmmmmmmmmmm"
             renderPlaceholder={({ children, attributes }) => (
               <div {...attributes}>
