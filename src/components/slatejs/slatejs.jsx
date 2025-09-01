@@ -448,6 +448,7 @@ export default function Slatejs({ sharedType, provider }) {
       });
       if (node) {
         const [element, path] = node;
+        console.log(element);
         const children = element.children;
         if (isCollapsed) {
           let child =
@@ -536,12 +537,6 @@ export default function Slatejs({ sharedType, provider }) {
             renderChunk={config.chunkDivs ? renderChunk : undefined}
             renderLeaf={renderLeaf}
             // onKeyDown={handleEditorKeydown}
-            onDOMBeforeInput={(e) => {
-              console.log('sssss', e.target.closest('svg'));
-              if (e.target.closest('svg')) {
-                e.stopPropagation();
-              }
-            }}
             placeholder="emmmmmmmmmmmmmmmmm"
             renderPlaceholder={({ children, attributes }) => (
               <div {...attributes}>

@@ -1,15 +1,17 @@
-import { Transforms } from 'slate';
+// import { Transforms } from 'slate';
 import {
-  ReactEditor,
+  // ReactEditor,
   useFocused,
   useSelected,
-  useSlateStatic,
+  // useSlateStatic,
 } from 'slate-react';
+import styles from './element.module.css';
 
 export default function ImageElement(props) {
   const { attributes, children, element } = props;
-  const editor = useSlateStatic();
-  const path = ReactEditor.findPath(editor, element);
+  // const editor = useSlateStatic();
+  // const path = ReactEditor.findPath(editor, element);
+  // Transforms.removeNodes(editor, {at: path})
   const selected = useSelected();
   const focused = useFocused();
 
@@ -19,39 +21,24 @@ export default function ImageElement(props) {
     ] || 'flex-start';
 
   return (
-    <div {...attributes}>
+    <div {...attributes} style={{ flex: 1 }}>
       {children}
 
       <div
         contentEditable={false}
+        className={styles.imageElement}
         style={{
-          position: 'relative',
-          display: 'flex',
           justifyContent: alignDirection,
         }}
       >
         <img
           src={element.url}
           alt={element.name}
+          className={styles.imageSelf}
           style={{
-            display: 'block',
-            maxWidth: '100%',
-            maxHeight: '20em',
             boxShadow: selected && focused ? '0 0 0 3px #B4D5FF' : 'none',
           }}
         />
-        <button
-          onClick={() => Transforms.removeNodes(editor, { at: path })}
-          style={{
-            display: selected && focused ? 'inline' : 'none',
-            position: 'absolute',
-            top: '0.5em',
-            left: '0.5em',
-            backgroundColor: '#fff',
-          }}
-        >
-          delete
-        </button>
       </div>
     </div>
   );

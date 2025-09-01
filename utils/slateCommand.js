@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { Editor, Element, Range, Transforms } from 'slate';
+import { Editor, Element, Path, Range, Transforms } from 'slate';
 import { HistoryEditor } from 'slate-history';
 
 const slateCommand = {
@@ -216,6 +216,7 @@ const slateCommand = {
   // todo comment选区完全包含已经comment的选区，被包含的选区comment会被覆盖
   // todo 选区被删除时，评论同步删除
   // todo 测试了腾讯文档，评论选区包含或是重叠均没有覆盖，各自独立 emmmmmmmmm
+  // todo 点击带有评论的区域时，高亮并选中该区域
   toggleComment(editor, { comment, commentFor }) {
     const marks = Editor.marks(editor);
     const isActive = marks ? !!marks.comments : false;
@@ -258,6 +259,45 @@ const slateCommand = {
       at: [currentPath + 1],
       select: true,
     });
+  },
+  // 拖拽移动节点 type below 移动到目标节点之下 exchange 交换两节点位置
+  moveNode(editor, dragNodePath, dropNodePath, type = 'below') {
+    // 有效节点 且 起点终点不等
+    if (
+      !Path.isPath(dragNodePath) ||
+      !Path.isPath(dropNodePath) ||
+      Path.equals(dragNodePath, dropNodePath)
+    ) {
+      return;
+    }
+    // 同一层级才允许拖动
+    if (!Path.equals(Path.parent(dragNodePath), Path.parent(dropNodePath))) {
+      return;
+    }
+    if (dragNodePath[0] < dropNodePath[0]) {
+      // 从前往后移动
+      Transforms.moveNodes(editor, { at: dragNodePath, to: dropNodePath });
+      if (type === 'exchange') {
+        Transforms.moveNodes(editor, {
+          at: [dropNodePath[0] - 1],
+          to: dragNodePath,
+        });
+      }
+    } else {
+      // 从后往前移动但移动后位置与原位置一样
+      if (dropNodePath[0] + 1 == dragNodePath[0]) {
+        return;
+      } else {
+        // 不一样则
+        Transforms.moveNodes(editor, {
+          at: dragNodePath,
+          to: [dropNodePath[0] + 1],
+        });
+        if (type === 'exchange') {
+          Transforms.moveNodes(editor, { at: dropNodePath, to: dragNodePath });
+        }
+      }
+    }
   },
 };
 

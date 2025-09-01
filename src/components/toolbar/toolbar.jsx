@@ -12,6 +12,7 @@ import {
   toolsIconName,
   toolOptionName,
 } from '../../constances/tools';
+import { Transforms } from 'slate';
 
 function renderIcon(name, onSet) {
   switch (name) {
@@ -121,7 +122,12 @@ export default function Toolbar({ hovering, commentClickHandler }) {
   };
 
   const insertFile = (fileType, value) => {
-    console.log(fileType, value);
+    console.log(fileType, value || 'https://i.imgur.com/VZewSe2.jpeg');
+    Transforms.insertNodes(editor, {
+      type: fileType,
+      url: 'https://i.imgur.com/VZewSe2.jpeg',
+      children: [{ text: '' }],
+    });
   };
 
   return (
