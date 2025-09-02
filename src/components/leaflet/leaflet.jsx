@@ -99,7 +99,7 @@ export default function Leaflet() {
         '&copy;<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
-    map.locate({ setView: true, maxZoom: 13 });
+    map.locate({ setView: true, maxZoom: 8 });
 
     map.on('locationfound', (e) => {
       const { latlng, accuracy } = e;
@@ -241,7 +241,12 @@ export default function Leaflet() {
   return (
     <div
       id="leaflet-map"
-      style={{ height: '100%', border: '1px solid', overflow: 'auto' }}
+      style={{
+        width: '100%',
+        height: '100%',
+        border: '1px solid',
+        overflow: 'auto',
+      }}
     ></div>
   );
 }
