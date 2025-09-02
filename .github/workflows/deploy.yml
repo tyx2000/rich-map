@@ -35,6 +35,8 @@ jobs:
 
       - name: build dist
         run: npm run build
+        env:
+          VITE_LIVE_BLOCK_PUB_KEY: ${{ secrets.VITE_LIVE_BLOCK_PUB_KEY }}
 
       - name: delete remoteprevious dist
         uses: appleboy/ssh-action@v1.2.2
