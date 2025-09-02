@@ -1,12 +1,14 @@
 name: deploy dist to docdoc
 
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'branch to build'
-        required: true
-        default: main
+  push:
+    branches: [main]
+  # workflow_dispatch:
+  #   inputs:
+  #     branch:
+  #       description: 'branch to build'
+  #       required: true
+  #       default: main
 
 jobs:
   build-and-deploy-dist:
@@ -59,3 +61,13 @@ jobs:
           key: ${{ secrets.SSH_TOKEN }}
           source: dist/
           target: ~/servers/docdoc
+
+      - name: restart nginx service
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_TOKEN }}
+          script: |
+            cd ~/servers
+            docker-compose restart nginx
