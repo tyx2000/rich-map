@@ -1,14 +1,12 @@
 name: deploy dist to docdoc
 
 on:
-  push:
-    branches: [main]
-  # workflow_dispatch:
-  #   inputs:
-  #     branch:
-  #       description: 'branch to build'
-  #       required: true
-  #       default: main
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'branch to build'
+        required: true
+        default: main
 
 jobs:
   build-and-deploy-dist:
