@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styles from './element.module.css';
 import { ReactEditor, useSlateStatic } from 'slate-react';
-import { Editor, Element } from 'slate';
 import DragIcon from './dragIcon';
 import slateCommand from '../../../../utils/slateCommand';
 

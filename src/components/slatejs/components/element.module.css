@@ -122,7 +122,6 @@
 }
 
 .commentContainer {
-  position: absolute;
   padding: 10px 20px;
   background-color: #fff;
   font-size: 14px;
@@ -140,7 +139,7 @@
       font-size: 13px;
       font-weight: bold;
       .time {
-        color: #ccc;
+        color: gray;
         font-size: 11px;
         font-weight: normal;
       }

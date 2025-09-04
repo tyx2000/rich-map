@@ -4,9 +4,12 @@
   position: relative;
   border-radius: 12px;
   background: #fff;
-  width: 100%;
   height: 100%;
   color: #111827;
+  max-width: 1200px;
+  width: 80vw;
+  padding: 50px;
+  background-color: transparent;
 }
 
 .editor {
@@ -23,7 +26,6 @@
 .editorContainer {
   position: relative;
   height: 100%;
-  background-color: lightgoldenrodyellow;
 }
 
 .editor p {

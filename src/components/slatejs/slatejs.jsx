@@ -18,6 +18,8 @@ import { serialize, deserialize } from '../../../utils/helper.js';
 import SlateElement from './components/index.jsx';
 import HoveringToolbar from './components/hoveringToolbar.jsx';
 import CommentInput from './components/commentInput.jsx';
+import CommentList from './components/commentList.jsx';
+import SlashMenu from './components/slashMenu.jsx';
 import { withHistory } from 'slate-history';
 import withCustomerElement from '../../../utils/withCustomerElement.js';
 import styles from './slatejs.module.css';
@@ -271,9 +273,12 @@ export default function Slatejs({ sharedType, provider }) {
     });
   });
 
+  const [comments, setComments] = useState();
+
   useEffect(() => {
     const keyDownHandler = (e) => {
       handleSlateKeyDown(e, editor, () => {
+        setComments(null);
         setShowCommentInput(false);
       });
     };
@@ -282,15 +287,6 @@ export default function Slatejs({ sharedType, provider }) {
       document.removeEventListener('keydown', keyDownHandler);
     };
   }, []);
-
-  // useEffect(() => {
-  //   if (collaborative) {
-  //     YjsEditor.connect(editor);
-  //     return () => {
-  //       YjsEditor.disconnect(editor);
-  //     };
-  //   }
-  // }, [editor]);
 
   // const initialValue = useMemo(
   //   () =>
@@ -341,7 +337,12 @@ export default function Slatejs({ sharedType, provider }) {
    *  attributes
    *  leafPosition { start, end, isFirst?, isLast? }
    */
-  const renderLeaf = useCallback((props) => <LeafElement {...props} />, []);
+  const renderLeaf = useCallback(
+    (props) => (
+      <LeafElement {...props} setComments={(val) => setComments(val)} />
+    ),
+    [],
+  );
 
   const handleEditorKeydown = (event) => {
     if (!event.ctrlKey) {
@@ -432,14 +433,11 @@ export default function Slatejs({ sharedType, provider }) {
   const restoreSelection = () => {};
 
   const handleSelectionChange = (selection) => {
-    const commentContainer = document.getElementById('commentContainer');
-    if (commentContainer) {
-      commentContainer.remove();
-    }
     setShowCommentInput(false);
     if (selection) {
       // anchor.path 开始节点路径 anchor.offset 在开始节点中的偏移
       // focus.path 结束节点路径 focus.offset 在结束节点中的偏移
+      // todo 存在 从前向后选择 和 从后向前选择 两种情形，必要时需判断
       const { anchor, focus } = selection;
       const isCollapsed = Range.isCollapsed(selection);
       const [node] = Editor.nodes(editor, {
@@ -448,7 +446,6 @@ export default function Slatejs({ sharedType, provider }) {
       });
       if (node) {
         const [element, path] = node;
-        console.log(element);
         const children = element.children;
         if (isCollapsed) {
           let child =
@@ -469,10 +466,7 @@ export default function Slatejs({ sharedType, provider }) {
   const [commentFor, setCommentFor] = useState('');
   const [showCommentInput, setShowCommentInput] = useState(false);
   const commentClickHandler = () => {
-    const commentContainer = document.getElementById('commentContainer');
-    if (commentContainer) {
-      commentContainer.remove();
-    }
+    setComments(null);
     // 输入评论添加选区标记
     slateCommand.toggleComment(editor, {});
     setShowCommentInput(true);
@@ -527,7 +521,8 @@ export default function Slatejs({ sharedType, provider }) {
             commentClickHandler={commentClickHandler}
           />
           <CommentInput onOk={onComment} showCommentInput={showCommentInput} />
-          {/* <div className={styles.editableWrapper} contentEditable={false}> */}
+          <CommentList comments={comments} />
+          <SlashMenu />
           <Editable
             className={styles.editable}
             spellCheck
@@ -548,7 +543,6 @@ export default function Slatejs({ sharedType, provider }) {
               </div>
             )}
           />
-          {/* </div> */}
         </Slate>
       )}
     </Fragment>

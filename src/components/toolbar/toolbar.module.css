@@ -1,12 +1,12 @@
 .toolbar {
-  width: fit-content;
+  /* width: fit-content; */
   position: relative;
   display: flex;
   gap: 5px;
   align-items: center;
-  height: 46px;
+  height: 40px;
   background-color: #fff;
-  border-radius: 18px;
+  border-radius: 8px;
   padding: 0 10px;
   box-shadow:
     rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,

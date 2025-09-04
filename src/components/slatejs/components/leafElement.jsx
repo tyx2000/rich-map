@@ -1,8 +1,14 @@
+import { useState } from 'react';
 import { getSelectionOffset } from '../../../../utils/helper';
 import styles from './element.module.css';
 
-export default function LeafElement({ attributes, children, leaf }) {
-  console.log(leaf);
+export default function LeafElement({
+  attributes,
+  children,
+  leaf,
+  setComments,
+}) {
+  const [leafClicked, setLeafClicked] = useState(false);
   if (leaf.bold) {
     children = <strong>{children}</strong>;
   }
@@ -33,42 +39,21 @@ export default function LeafElement({ attributes, children, leaf }) {
   }
 
   const style = {
-    color: leaf.color || (leaf.comments ? '#C10007' : '') || '',
-    backgroundColor: leaf.highlight || (leaf.comments ? '#FFE2E2' : '') || '',
-    borderBottom: leaf.comments ? '2px solid yellow' : '',
+    color: leaf.color || (leaf.withComment ? '#C10007' : '') || '',
+    backgroundColor:
+      leaf.highlight || (leaf.withComment ? '#FFE2E2' : '') || '',
+    borderBottom: leaf.withComment ? '2px solid yellow' : '',
   };
 
+  // todo 获取当前Leaf的Range，根据Range来定位CommentList, Range未变动时毋需重新计算位置
   const handleClickLeaf = () => {
-    const el = document.getElementById('commentContainer');
-    if (el) return;
-    if (leaf.comments) {
-      const commentContainer = document.createElement('div');
-      commentContainer.id = 'commentContainer';
-      commentContainer.className = styles.commentContainer;
-      const offset = getSelectionOffset();
-      commentContainer.style.top = `${offset.top + window.pageYOffset + offset.height}px`;
-      commentContainer.style.left = `${offset.left + window.pageXOffset - commentContainer.offsetWidth / 2 + offset.width / 2}px`;
-      document.body.appendChild(commentContainer);
-
-      leaf.comments.forEach(
-        ({ id, timestamp, username, comment, commentFor }) => {
-          const commentEl = document.createElement('div');
-          commentEl.className = styles.comment;
-          commentEl.innerHTML = `
-          <div key=${id} class=${styles.author}>
-            ${username}&nbsp;&nbsp;
-            <span class=${styles.time}>
-              ${new Date(timestamp).toLocaleDateString() + ' ' + new Date(timestamp).toLocaleTimeString()}
-            </span>
-          </div>
-          <div class=${styles.commentFor}>${commentFor}</div>
-          <div class=${styles.content}>
-            ${comment}
-          </div>
-          `;
-          commentContainer.appendChild(commentEl);
-        },
-      );
+    if (leaf.withComment) {
+      const commentKeys = Object.keys(leaf).filter((key) => key.includes('c-'));
+      const comments = commentKeys.map((key) => leaf[key]);
+      if (comments.length === 0) return;
+      setComments(comments);
+    } else {
+      setComments(null);
     }
   };
 

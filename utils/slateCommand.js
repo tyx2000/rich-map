@@ -212,39 +212,55 @@ const slateCommand = {
       }
     }
   },
-  // todo comment选区重叠时，comment合并而不是覆盖
-  // todo comment选区完全包含已经comment的选区，被包含的选区comment会被覆盖
-  // todo 选区被删除时，评论同步删除
-  // todo 测试了腾讯文档，评论选区包含或是重叠均没有覆盖，各自独立 emmmmmmmmm
-  // todo 点击带有评论的区域时，高亮并选中该区域
+  // done todo comment选区重叠时，comment各自独立
+  // todo 被评论选区变化时，comment中记录信息同步变化，比如位置，内容等
+  // done todo 选区addMark会覆盖选区内的同名mark
   toggleComment(editor, { comment, commentFor }) {
     const marks = Editor.marks(editor);
-    const isActive = marks ? !!marks.comments : false;
-    if (isActive) {
-      const comments = marks.comments;
-      if (comment) {
-        Editor.addMark(editor, 'comments', [
-          // 重叠部分缺失应该合并评论
-          // ...comments.filter((item) => item.commentFor === commentFor),
-          ...comments,
-          {
-            id: 'c-' + Date.now(),
-            timestamp: Date.now(),
-            username: faker.person.fullName(),
-            comment,
-            commentFor,
-          },
-        ]);
+    // 为每一个评论单独设置属性，避免合并
+    if (marks.withComment) {
+      if (!comment || !commentFor) {
+        Editor.removeMark(editor, 'withComment');
       } else {
-        if (comments.length) {
-          return;
-        } else {
-          Editor.removeMark(editor, 'comments');
-        }
+        Editor.addMark(editor, `c-${Date.now()}`, {
+          id: `c-${Date.now()}`,
+          timestamp: Date.now(),
+          username: faker.person.fullName(),
+          comment,
+          commentFor,
+        });
       }
     } else {
-      Editor.addMark(editor, 'comments', []);
+      Editor.addMark(editor, 'withComment', true);
     }
+
+    // comments数组为评论集合
+    // const isActive = marks ? !!marks.comments : false;
+    // if (isActive) {
+    //   const comments = marks.comments;
+    //   if (comment) {
+    //     Editor.addMark(editor, 'comments', [
+    //       // 重叠部分确实应该合并评论
+    //       // ...comments.filter((item) => item.commentFor === commentFor),
+    //       ...comments,
+    //       {
+    //         id: 'c-' + Date.now(),
+    //         timestamp: Date.now(),
+    //         username: faker.person.fullName(),
+    //         comment,
+    //         commentFor,
+    //       },
+    //     ]);
+    //   } else {
+    //     if (comments.length) {
+    //       return;
+    //     } else {
+    //       Editor.removeMark(editor, 'comments');
+    //     }
+    //   }
+    // } else {
+    //   Editor.addMark(editor, 'comments', []);
+    // }
   },
   // 跳出当前类型节点，在相邻处添加 paragraph
   insertNewParagraphAtNext(editor) {

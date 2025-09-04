@@ -57,7 +57,6 @@ export default function Toolbar({ hovering, commentClickHandler }) {
 
   const onSet = (name, value) => {
     setSelectedToolName('');
-    console.log(name, value);
     switch (name) {
       case 'undo':
       case 'redo':

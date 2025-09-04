@@ -28,7 +28,6 @@ export default function CommentInput({ showCommentInput, onOk }) {
       <div
         ref={ref}
         className={[styles.hoveringTool, styles.commentInput].join(' ')}
-        style={{}}
       >
         <input
           id="commentInput"
