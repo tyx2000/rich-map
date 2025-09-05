@@ -46,7 +46,9 @@ export default function LeafElement({
   };
 
   // todo 获取当前Leaf的Range，根据Range来定位CommentList, Range未变动时毋需重新计算位置
+  // todo 根据Range显示 indicator 高亮当前 mark 的 Leaf（但是存在分割问题
   const handleClickLeaf = () => {
+    console.log(leaf);
     if (leaf.withComment) {
       const commentKeys = Object.keys(leaf).filter((key) => key.includes('c-'));
       const comments = commentKeys.map((key) => leaf[key]);

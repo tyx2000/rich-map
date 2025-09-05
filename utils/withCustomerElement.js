@@ -190,6 +190,7 @@ export default function withCustomerElement(editor) {
   // };
 
   // todo 通过enter跳出当前 新但是空内容 的节点 --- Shift + Enter
+  // todo 在评论选区结尾enter跳出，新的内容还带有评论标记。。。。。。。。。
   editor.insertBreak = (...args) => {
     if (!editor.selection) return;
     const [currentNode] = Editor.nodes(editor, {

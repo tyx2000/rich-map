@@ -212,6 +212,54 @@ const slateCommand = {
       }
     }
   },
+  commentAction(editor, action, values = {}) {
+    if (action === 'addTemporaryMark') {
+      Editor.addMark(editor, 'withComment', true);
+    }
+
+    const { comment, commentFor, commentId } = values;
+    if (action === 'removeMark') {
+      // 有commentId删除单条评论
+      if (commentId) {
+        Editor.removeMark(editor, commentId);
+        const marks = Editor.marks(editor);
+        const hasComment = Object.keys(marks).some((key) => key.includes('c-'));
+        if (!hasComment) {
+          Editor.removeMark(editor, 'withComment');
+        }
+      } else {
+        // 否则删除所有评论
+        const marks = Editor.marks(editor);
+        const commentKeys = Object.keys(marks).filter((key) =>
+          key.includes('c-'),
+        );
+        if (commentKeys.length) {
+          commentKeys.forEach((key) => {
+            Editor.removeMark(editor, key);
+          });
+        }
+        Editor.removeMark(editor, 'withComment');
+      }
+    }
+    if (action === 'addMark') {
+      // 对已经评论的叶子节点中的部分再进行评论，所选中的 部分 会带有父级叶子节点的评论，
+      // todo 上述情况，是否需要评论各自独立不合并
+      // todo 根据被评论的实时Range来判断 评论应该剔除还是合并
+      // const marks = Editor.marks(editor, { at: editor.selection });
+      // const [anchor, focus] = Range.edges(editor.selection);
+      // console.log({ marks, anchor, focus });
+
+      const timestamp = Date.now();
+      Editor.addMark(editor, 'withComment', true);
+      Editor.addMark(editor, `c-${timestamp}`, {
+        id: `c-${timestamp}`,
+        timestamp,
+        username: faker.person.fullName(),
+        comment,
+        commentFor,
+      });
+    }
+  },
   // done todo comment选区重叠时，comment各自独立
   // todo 被评论选区变化时，comment中记录信息同步变化，比如位置，内容等
   // done todo 选区addMark会覆盖选区内的同名mark

@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
 import Portal from '../../portal';
 import styles from './element.module.css';
-import { getSelectionOffset } from '../../../../utils/helper';
+import {
+  getSelectionOffset,
+  makeElementVisiable,
+} from '../../../../utils/helper';
 
 export default function CommentList({ comments }) {
-  console.log('render render', comments);
-
   if (!comments || comments.length === 0) return null;
 
   const ref = useRef(null);
@@ -18,6 +19,8 @@ export default function CommentList({ comments }) {
       el.style.opacity = '1';
       el.style.top = `${offset.top + window.pageYOffset + offset.height}px`;
       el.style.left = `${offset.left + window.pageXOffset - el.offsetWidth / 2 + offset.width / 2}px`;
+
+      makeElementVisiable(el);
     }
   }, [comments]);
 
@@ -42,7 +45,7 @@ export default function CommentList({ comments }) {
                 </span>
               </div>
               <div className={styles.commentFor}>{commentFor}</div>
-              <div className={styles.comment}>{comment}</div>
+              <div className={styles.content}>{comment}</div>
             </div>
           );
         })}

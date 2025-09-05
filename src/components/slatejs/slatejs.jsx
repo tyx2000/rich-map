@@ -273,13 +273,24 @@ export default function Slatejs({ sharedType, provider }) {
     });
   });
 
+  const [showSlashMenu, setShowSlashMenu] = useState(false);
   const [comments, setComments] = useState();
 
   useEffect(() => {
     const keyDownHandler = (e) => {
-      handleSlateKeyDown(e, editor, () => {
-        setComments(null);
-        setShowCommentInput(false);
+      handleSlateKeyDown(e, editor, (action) => {
+        if (action === 'clearComments') {
+          setComments(null);
+        }
+        if (action === 'hideCommentInput') {
+          setShowCommentInput(false);
+        }
+        if (action === 'showSlashMenu') {
+          setShowSlashMenu(true);
+        }
+        if (action === 'hideSlashMenu') {
+          setShowSlashMenu(false);
+        }
       });
     };
     document.addEventListener('keydown', keyDownHandler);
@@ -468,19 +479,24 @@ export default function Slatejs({ sharedType, provider }) {
   const commentClickHandler = () => {
     setComments(null);
     // 输入评论添加选区标记
-    slateCommand.toggleComment(editor, {});
+    // slateCommand.toggleComment(editor, {});
+    slateCommand.commentAction(editor, 'addTemporaryMark');
     setShowCommentInput(true);
     const selection = window.getSelection();
     setCommentFor(selection.toString());
   };
   const onComment = (val) => {
-    console.log({ val });
     setShowCommentInput(false);
     if (!val) {
-      slateCommand.toggleComment(editor, {});
+      // slateCommand.toggleComment(editor, {});
+      slateCommand.commentAction(editor, 'removeMark');
       Transforms.collapse(editor, { edge: 'end' });
     } else {
-      slateCommand.toggleComment(editor, { comment: val, commentFor });
+      // slateCommand.toggleComment(editor, { comment: val, commentFor });
+      slateCommand.commentAction(editor, 'addMark', {
+        comment: val,
+        commentFor,
+      });
     }
     // done todo 评论与对应的selection怎么存 --- 无需保存selection，评论添加到Leaf节点上
     // done todo selection内容变动与评论同步变化 --- 快照，评论与内容对应，不变
@@ -522,7 +538,7 @@ export default function Slatejs({ sharedType, provider }) {
           />
           <CommentInput onOk={onComment} showCommentInput={showCommentInput} />
           <CommentList comments={comments} />
-          <SlashMenu />
+          <SlashMenu showSlashMenu={showSlashMenu} />
           <Editable
             className={styles.editable}
             spellCheck

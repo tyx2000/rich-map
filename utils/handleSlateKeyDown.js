@@ -19,11 +19,14 @@ export default function handleSlateKeyDown(e, editor, callback) {
     Transforms.insertText(editor, '    ');
     return;
   }
-  // esc 关闭选区评论框，去除临时选区标记
+  // esc 关闭选区评论框，去除临时选区标记, 关闭评论列表
   if (e.key === 'Escape') {
-    slateCommand.toggleComment(editor, {});
+    // slateCommand.toggleComment(editor, {});
+    slateCommand.commentAction(editor, 'removeMark');
     Transforms.collapse(editor, { edge: 'end' });
-    callback && callback();
+    callback && callback('clearComments');
+    callback && callback('hideCommentInput');
+    callback && callback('hideSlashMenu');
   }
   // 空节点识别 / 显示 SlashMenu
   if (e.key === '/') {
@@ -38,7 +41,7 @@ export default function handleSlateKeyDown(e, editor, callback) {
         element.children.length === 1 &&
         element.children[0].text === ''
       ) {
-        console.log('show slash menu');
+        callback && callback('showSlashMenu');
       }
     }
   }

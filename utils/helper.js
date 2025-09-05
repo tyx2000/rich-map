@@ -49,3 +49,24 @@ export const getSelectionOffset = () => {
   const offset = domRange.getBoundingClientRect();
   return offset;
 };
+
+export const makeElementVisiable = (element) => {
+  const [screenWidth, screenHeight] = [window.innerWidth, window.innerHeight];
+  const { width, height, top, right, bottom, left } =
+    element.getBoundingClientRect();
+  const [topOut, rightOut, bottomOut, leftOut] = [
+    top < 0,
+    right > screenWidth,
+    bottom > screenHeight,
+    left < 0,
+  ];
+  if (rightOut) {
+    element.style.left = `${screenWidth - width - 10}px`;
+  }
+  if (leftOut) {
+    element.style.left = '10px';
+  }
+  if (bottomOut) {
+    element.style.top = `${screenHeight - height - 10}px`;
+  }
+};
