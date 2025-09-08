@@ -477,6 +477,7 @@ export default function Slatejs({ sharedType, provider }) {
   const [commentFor, setCommentFor] = useState('');
   const [showCommentInput, setShowCommentInput] = useState(false);
   const commentClickHandler = () => {
+    if (!editor.selection || Range.isCollapsed(editor.selection)) return;
     setComments(null);
     // 输入评论添加选区标记
     // slateCommand.toggleComment(editor, {});
