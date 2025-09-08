@@ -1,6 +1,4 @@
 .toolbar {
-  /* width: fit-content; */
-  position: relative;
   display: flex;
   gap: 5px;
   align-items: center;
@@ -36,6 +34,9 @@
     padding: 0 4px;
     cursor: default;
     background-color: transparent;
+  }
+  &.selectedTool {
+    background-color: #e5e5e5;
   }
 }
 

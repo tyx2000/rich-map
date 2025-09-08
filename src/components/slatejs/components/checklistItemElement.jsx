@@ -1,5 +1,6 @@
 import { Transforms } from 'slate';
 import { ReactEditor, useReadOnly, useSlateStatic } from 'slate-react';
+import styles from './element.module.css';
 
 export default function ChecklistItemElement(props) {
   const { attributes, children, element } = props;
@@ -15,16 +16,10 @@ export default function ChecklistItemElement(props) {
   return (
     <div
       {...attributes}
-      style={{
-        display: 'flex',
-        justifyContent: alignDirection,
-        padding: '3px 0',
-      }}
+      style={{ justifyContent: alignDirection }}
+      className={styles.checkListItem}
     >
-      <span
-        contentEditable={false}
-        style={{ width: 26, display: 'flex', alignItems: 'center' }}
-      >
+      <span contentEditable={false} className={styles.checkBox}>
         <input
           type="checkbox"
           checked={checked}
@@ -41,11 +36,11 @@ export default function ChecklistItemElement(props) {
       <span
         contentEditable={!readonly}
         suppressContentEditableWarning
+        className={styles.checkContent}
         style={{
           color: checked ? 'red' : '#000',
           opacity: checked ? 0.6 : 1,
           textDecoration: checked ? 'line-through' : 'none',
-          outline: 'none',
         }}
       >
         {children}

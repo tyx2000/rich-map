@@ -55,10 +55,10 @@ export const makeElementVisiable = (element) => {
   const { width, height, top, right, bottom, left } =
     element.getBoundingClientRect();
   const [topOut, rightOut, bottomOut, leftOut] = [
-    top < 0,
-    right > screenWidth,
-    bottom > screenHeight,
-    left < 0,
+    top < 10,
+    screenWidth - right < 10,
+    screenHeight - bottom < 10,
+    left < 10,
   ];
   if (rightOut) {
     element.style.left = `${screenWidth - width - 10}px`;

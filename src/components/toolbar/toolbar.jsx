@@ -1,10 +1,10 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './toolbar.module.css';
 import FontSize from './components/fontSize';
 import InputUrlModal from './components/inputUrlModal';
 import useClickOutside from '../../hooks/useClickOutside';
 import slateCommand from '../../../utils/slateCommand';
-import { ReactEditor, useSlateStatic } from 'slate-react';
+import { useSlateStatic } from 'slate-react';
 import {
   tools,
   hoveringTools,
@@ -13,6 +13,7 @@ import {
   toolOptionName,
 } from '../../constances/tools';
 import { Transforms } from 'slate';
+import { makeElementVisiable } from '../../../utils/helper';
 
 function renderIcon(name, onSet) {
   switch (name) {
@@ -46,10 +47,16 @@ export default function Toolbar({ hovering, commentClickHandler }) {
     if (toolsWithOptions.includes(name)) {
       setSelectedToolName(name);
       const childEl = e.currentTarget;
-      const parentEl = childEl.parentNode;
       const childOffset = childEl.getBoundingClientRect();
-      const parentOffset = parentEl.getBoundingClientRect();
-      setOptionsOffsetLeft(childOffset.left - parentOffset.left);
+      // const parentEl = childEl.parentNode;
+      // const parentOffset = parentEl.getBoundingClientRect();
+      // setOptionsOffsetLeft(childOffset.left - parentOffset.left);
+      setOptionsOffsetLeft(childOffset.left);
+
+      setTimeout(() => {
+        const el = document.getElementById('toolOptions');
+        el && makeElementVisiable(el);
+      }, 0);
     } else {
       onSet(name);
     }
@@ -142,7 +149,10 @@ export default function Toolbar({ hovering, commentClickHandler }) {
     >
       {(hovering ? hoveringTools : tools).map((item, index) => (
         <div
-          className={styles.toolbarItem}
+          className={[
+            styles.toolbarItem,
+            selectedToolName === item ? styles.selectedTool : '',
+          ].join(' ')}
           key={item + index}
           onClick={(e) => onClickToolItem(e, item)}
         >
@@ -159,6 +169,7 @@ export default function Toolbar({ hovering, commentClickHandler }) {
       ))}
       {toolsWithOptions.includes(selectedToolName) && (
         <div
+          id="toolOptions"
           className={styles.options}
           style={{
             left: optionsOffsetLeft,

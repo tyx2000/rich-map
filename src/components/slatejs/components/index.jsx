@@ -9,11 +9,6 @@ import Heading from './heading';
 import LinkElement from './linkElement';
 import BadgeElement from './badgeElement';
 import DragWrapper from './dragWrapper';
-// const Heading = ({ styleProps, showSelectedHeadings = false, ...props }) => {
-//   const selected = showSelectedHeadings ? useSelected() : false;
-//   const style = { ...styleProps, color: selected ? 'green' : undefined };
-//   return <h1 {...props} selected={selected} style={style}></h1>;
-// };
 
 export default function SlateElement(props) {
   const {
@@ -100,6 +95,7 @@ export default function SlateElement(props) {
   return (
     <DragWrapper
       attributes={attributes}
+      elementType={type}
       style={{
         contentVisibility: contentVisibility ? 'auto' : undefined,
       }}

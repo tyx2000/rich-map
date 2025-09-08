@@ -1,18 +1,26 @@
+import { Fragment } from 'react';
 import styles from './element.module.css';
 
-export default function DragIcon({ onMouseDown }) {
+const undraggableElementType = ['drop-indicator'];
+
+export default function DragIcon({ onMouseDown, elementType }) {
+  const isElementDraggable = !undraggableElementType.includes(elementType);
   return (
     <div
       contentEditable={false}
       className={styles.dragIcon}
-      onMouseDown={onMouseDown}
+      onMouseDown={isElementDraggable ? onMouseDown : () => {}}
     >
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+      {isElementDraggable ? (
+        <Fragment>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </Fragment>
+      ) : null}
     </div>
   );
 }

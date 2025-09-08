@@ -43,19 +43,16 @@
   justify-content: flex-start;
   align-items: center;
   gap: 6px;
-  border: 5px solid transparent;
-  border-radius: 3px;
   transition: all linear 0.2s;
+  border-bottom: 5px solid transparent;
   &:hover {
-    background-color: #e0edfb;
     .dragIcon {
       opacity: 1;
     }
   }
   .dragIcon {
-    width: 16px;
+    width: 14px;
     height: 16px;
-    transition: all linear 0.1s;
     opacity: 0;
     cursor: grab;
     user-select: none;
@@ -82,6 +79,7 @@
   overflow: auto;
   margin: 0;
   flex: 1;
+  word-break: break-all;
 }
 
 .linkWrapper {
@@ -219,5 +217,47 @@
       font-size: 12px;
       color: #0a0a0a;
     }
+  }
+}
+
+.checkListItem {
+  display: flex;
+  flex: 1;
+  padding: 3px 0;
+  word-break: break-word;
+  .checkBox {
+    width: 26px;
+    display: flex;
+    align-items: center;
+  }
+  .checkContent {
+    flex: 1;
+    outline: none;
+  }
+}
+
+.listPrefixWrapper {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .listPrefixType {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #000;
+  }
+}
+.listItem {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  .content {
+    flex: 1;
+    color: purple;
+    outline: none;
+    word-break: break-word;
   }
 }

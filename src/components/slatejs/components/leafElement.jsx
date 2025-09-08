@@ -1,14 +1,9 @@
-import { useState } from 'react';
-import { getSelectionOffset } from '../../../../utils/helper';
-import styles from './element.module.css';
-
 export default function LeafElement({
   attributes,
   children,
   leaf,
   setComments,
 }) {
-  const [leafClicked, setLeafClicked] = useState(false);
   if (leaf.bold) {
     children = <strong>{children}</strong>;
   }
