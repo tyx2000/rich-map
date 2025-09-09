@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import {
   createEditor as creaetSlateEditor,
   Editor,
@@ -9,7 +9,7 @@ import {
   Text,
   Range,
 } from 'slate';
-import { Slate, withReact, Editable } from 'slate-react';
+import { Slate, withReact, Editable, ReactEditor } from 'slate-react';
 import slateCommand from '../../../utils/slateCommand.js';
 
 import LeafElement from './components/leafElement.jsx';
@@ -474,14 +474,41 @@ export default function Slatejs({ sharedType, provider }) {
     }
   };
 
+  const currentSelectionRef = useRef(null);
   const [commentFor, setCommentFor] = useState('');
   const [showCommentInput, setShowCommentInput] = useState(false);
   const commentClickHandler = () => {
     if (!editor.selection || Range.isCollapsed(editor.selection)) return;
     setComments(null);
+    currentSelectionRef.current = editor.selection;
+
     // 输入评论添加选区标记
     // slateCommand.toggleComment(editor, {});
-    slateCommand.commentAction(editor, 'addTemporaryMark');
+    // slateCommand.commentAction(editor, 'addTemporaryMark');
+
+    let currentCommentNode = null;
+    const commentNodes = Array.from(
+      Editor.nodes(editor, { match: (n) => n.type === 'comment' }),
+    );
+    for (const [commentNode, commentNodePath] of commentNodes) {
+      const commentNodeRange = Editor.range(editor, commentNodePath);
+
+      if (Range.equals(commentNodeRange, editor.selection)) {
+        currentCommentNode = commentNode;
+      }
+    }
+    if (currentCommentNode) {
+      console.log(currentCommentNode);
+    } else {
+      Transforms.wrapNodes(
+        editor,
+        { type: 'comment', comments: [] },
+        {
+          at: editor.selection,
+          split: true,
+        },
+      );
+    }
     setShowCommentInput(true);
     const selection = window.getSelection();
     setCommentFor(selection.toString());
@@ -490,15 +517,22 @@ export default function Slatejs({ sharedType, provider }) {
     setShowCommentInput(false);
     if (!val) {
       // slateCommand.toggleComment(editor, {});
-      slateCommand.commentAction(editor, 'removeMark');
-      Transforms.collapse(editor, { edge: 'end' });
+      // slateCommand.commentAction(editor, 'removeMark');
+      // Transforms.collapse(editor, { edge: 'end' });
+      Transforms.unwrapNodes(editor, { match: (n) => n.type === 'comment' });
     } else {
       // slateCommand.toggleComment(editor, { comment: val, commentFor });
-      slateCommand.commentAction(editor, 'addMark', {
-        comment: val,
-        commentFor,
-      });
+      // slateCommand.commentAction(editor, 'addMark', {
+      //   comment: val,
+      //   commentFor,
+      // });
+      Transforms.setNodes(
+        editor,
+        { comments: [{ id: Date.now() }] },
+        { at: editor.selection, match: (n) => n.type === 'comment' },
+      );
     }
+    currentSelectionRef.current = null;
     // done todo 评论与对应的selection怎么存 --- 无需保存selection，评论添加到Leaf节点上
     // done todo selection内容变动与评论同步变化 --- 快照，评论与内容对应，不变
     // todo selection被删除同步删除对应的评论

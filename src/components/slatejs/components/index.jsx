@@ -9,6 +9,7 @@ import Heading from './heading';
 import LinkElement from './linkElement';
 import BadgeElement from './badgeElement';
 import DragWrapper from './dragWrapper';
+import CommentElement from './commentElement';
 
 export default function SlateElement(props) {
   const {
@@ -86,13 +87,18 @@ export default function SlateElement(props) {
             {children}
           </td>
         );
+      case 'comment':
+        return <CommentElement {...props} />;
       default:
         return <DefaultElement {...props} />;
     }
   };
 
-  // return renderElement();
-  return (
+  const inlineElement = ['link', 'comment'];
+
+  return inlineElement.includes(type) ? (
+    renderElement()
+  ) : (
     <DragWrapper
       attributes={attributes}
       elementType={type}

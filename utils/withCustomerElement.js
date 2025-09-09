@@ -19,7 +19,8 @@ export default function withCustomerElement(editor) {
 
   editor.isInline = (element) => {
     return (
-      ['link', 'button', 'badge'].includes(element.type) || isInline(element)
+      ['link', 'button', 'badge', 'comment'].includes(element.type) ||
+      isInline(element)
     );
   };
 
