@@ -444,7 +444,11 @@ export default function Slatejs({ sharedType, provider }) {
   const restoreSelection = () => {};
 
   const handleSelectionChange = (selection) => {
-    setShowCommentInput(false);
+    if (showCommentInput) {
+      setShowCommentInput(false);
+      Transforms.select(editor, currentSelectionRef.current);
+      slateCommand.commentAction(editor, 'check');
+    }
     if (selection) {
       // anchor.path 开始节点路径 anchor.offset 在开始节点中的偏移
       // focus.path 结束节点路径 focus.offset 在结束节点中的偏移
@@ -480,35 +484,15 @@ export default function Slatejs({ sharedType, provider }) {
   const commentClickHandler = () => {
     if (!editor.selection || Range.isCollapsed(editor.selection)) return;
     setComments(null);
-    currentSelectionRef.current = editor.selection;
 
     // 输入评论添加选区标记
     // slateCommand.toggleComment(editor, {});
-    // slateCommand.commentAction(editor, 'addTemporaryMark');
+    slateCommand.commentAction(editor, 'addTemporaryMark', {
+      setNewMarkSelection: (newSelection) => {
+        currentSelectionRef.current = newSelection;
+      },
+    });
 
-    let currentCommentNode = null;
-    const commentNodes = Array.from(
-      Editor.nodes(editor, { match: (n) => n.type === 'comment' }),
-    );
-    for (const [commentNode, commentNodePath] of commentNodes) {
-      const commentNodeRange = Editor.range(editor, commentNodePath);
-
-      if (Range.equals(commentNodeRange, editor.selection)) {
-        currentCommentNode = commentNode;
-      }
-    }
-    if (currentCommentNode) {
-      console.log(currentCommentNode);
-    } else {
-      Transforms.wrapNodes(
-        editor,
-        { type: 'comment', comments: [] },
-        {
-          at: editor.selection,
-          split: true,
-        },
-      );
-    }
     setShowCommentInput(true);
     const selection = window.getSelection();
     setCommentFor(selection.toString());
@@ -517,22 +501,15 @@ export default function Slatejs({ sharedType, provider }) {
     setShowCommentInput(false);
     if (!val) {
       // slateCommand.toggleComment(editor, {});
-      // slateCommand.commentAction(editor, 'removeMark');
+      slateCommand.commentAction(editor, 'removeMark');
       // Transforms.collapse(editor, { edge: 'end' });
-      Transforms.unwrapNodes(editor, { match: (n) => n.type === 'comment' });
     } else {
       // slateCommand.toggleComment(editor, { comment: val, commentFor });
-      // slateCommand.commentAction(editor, 'addMark', {
-      //   comment: val,
-      //   commentFor,
-      // });
-      Transforms.setNodes(
-        editor,
-        { comments: [{ id: Date.now() }] },
-        { at: editor.selection, match: (n) => n.type === 'comment' },
-      );
+      slateCommand.commentAction(editor, 'addMark', {
+        comment: val,
+        commentFor,
+      });
     }
-    currentSelectionRef.current = null;
     // done todo 评论与对应的selection怎么存 --- 无需保存selection，评论添加到Leaf节点上
     // done todo selection内容变动与评论同步变化 --- 快照，评论与内容对应，不变
     // todo selection被删除同步删除对应的评论
@@ -563,6 +540,7 @@ export default function Slatejs({ sharedType, provider }) {
               localStorage.setItem('content', content);
               localStorage.setItem('content-serialize', serialize(value));
             }
+            // console.log(value, editor.operations);
           }}
           onSelectionChange={handleSelectionChange}
         >

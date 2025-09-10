@@ -1,3 +1,12 @@
+import colors from '../../../constances/colors';
+
+const bgColors = Object.keys(colors)
+  .map((type) => colors[type][1])
+  .slice(1);
+const borderBottomColors = Object.keys(colors)
+  .map((type) => colors[type][3])
+  .slice(1);
+
 export default function LeafElement({
   attributes,
   children,
@@ -37,9 +46,16 @@ export default function LeafElement({
   const hasComment = Object.keys(leaf).some((key) => key.includes('c-'));
 
   const style = {
-    color: leaf.color || (hasComment ? '#C10007' : '') || '',
-    backgroundColor: leaf.highlight || (hasComment ? '#FFE2E2' : '') || '',
-    borderBottom: leaf.withComment ? '2px solid purple' : '',
+    color: leaf.color || (hasComment ? 'purple' : '') || '',
+    backgroundColor:
+      leaf.highlight ||
+      (hasComment
+        ? bgColors[Math.floor(Math.random() * bgColors.length)]
+        : '') ||
+      '',
+    borderBottom: leaf.withComment
+      ? `2px solid ${borderBottomColors[Math.floor(Math.random() * borderBottomColors.length)]}`
+      : '',
   };
 
   // todo 获取当前Leaf的Range，根据Range来定位CommentList, Range未变动时毋需重新计算位置

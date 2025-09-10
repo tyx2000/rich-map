@@ -19,11 +19,21 @@ export default function CommentInput({ showCommentInput, onOk }) {
     if (e.key === 'Enter') {
       const el = document.activeElement;
       if (el && el.id === 'commentInput') {
-        // todo 可以执行，但是选区变化，无法把评论添加到正确的选区上
-        // confirmComment();
+        confirmComment();
       }
     }
   };
+
+  useEffect(() => {
+    if (ref.current && showCommentInput) {
+      document.addEventListener('keydown', onCommentInputFocusedAndEnter);
+    } else {
+      document.removeEventListener('keydown', onCommentInputFocusedAndEnter);
+    }
+    return () => {
+      document.removeEventListener('keydown', onCommentInputFocusedAndEnter);
+    };
+  }, [showCommentInput, comment]);
 
   useEffect(() => {
     const el = ref.current;
@@ -37,13 +47,10 @@ export default function CommentInput({ showCommentInput, onOk }) {
 
       setComment('');
       document.getElementById('commentInput').focus();
-
-      document.addEventListener('keydown', onCommentInputFocusedAndEnter);
     } else {
       el.style.opacity = '0';
       el.style.top = '-10000px';
       el.style.left = '-10000px';
-      document.removeEventListener('keydown', onCommentInputFocusedAndEnter);
     }
   }, [showCommentInput]);
 
