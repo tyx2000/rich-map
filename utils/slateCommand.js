@@ -4,7 +4,7 @@ import { HistoryEditor } from 'slate-history';
 import colors from '../src/constances/colors';
 
 const bgColors = Object.keys(colors)
-  .map((type) => colors[type][2])
+  .map((type) => colors[type][1])
   .slice(1);
 const borderBottomColors = Object.keys(colors)
   .map((type) => colors[type][4])
@@ -269,56 +269,90 @@ const slateCommand = {
   },
   // 基于 commentSelection 的局限作出修改
   // 查找所有comment节点，将Range和当前选区比较判断选区是否为comment节点
-  // 每次执行Transforms上方法后，editor文档结构变化，传入的selection一直固定不变会有问题((((告辞))))
+  // 每次执行Transforms上方法后，editor文档结构变化，传入的selection一直固定不变会有问题
+  // ((((告辞=告辞))))
   // todo setNodes unsetNodes wrapNodes unwrapNodes要测试at的匹配问题
-  setSelectionComment(editor, values = {}) {
-    const { selection, comment } = values;
-    let currentSelectionCommentNode = null;
-    const commentNodes = Editor.nodes(editor, {
-      match: (n) => n.type === 'comment',
-    });
-    const commentNodesArray = Array.from(commentNodes);
-    for (const [commentNode, commentNodePath] of commentNodesArray) {
-      const commentNodeRange = editor.range(editor, commentNodePath);
-      console.log({ commentNodeRange });
-      if (Range.equals(commentNodeRange, editor.selection)) {
-        currentSelectionCommentNode = commentNode;
-        break;
-      }
-    }
-    console.log({ currentSelectionCommentNode });
-    // 如果当前选区是comment节点
-    if (currentSelectionCommentNode) {
-      const prevComments = currentSelectionCommentNode.comments;
-      // comment非空，添加新的评论
-      if (comment) {
-        const newComment = {
-          id: 'c-' + Date.now(),
-          timestamp: Date.now(),
-          content: comment,
-        };
+  wrapSelectionWithComment(editor, action, values = {}) {
+    // const { selection, comment } = values;
 
-        Transforms.setNodes(
-          editor,
-          { comments: [...prevComments, newComment] },
-          { at: editor.selection },
-        );
-      } else {
-        // comment 空，且前值也为空，则unwrap
-        if (prevComments.length === 0) {
-          Transforms.unwrapNodes(editor, { at: editor.selection });
-        }
-      }
-    } else {
-      // 当前选区不是 comment 节点
-      // 首先临时转换成comment类型并增加comments属性
-      // 再添加评论时进入if分支
+    if (!editor.selection || Range.isCollapsed(editor.selection)) return;
+    if (action === 'wrap') {
       Transforms.wrapNodes(
         editor,
-        { type: 'comment', comments: [] },
+        {
+          type: 'comment',
+          borderBottom: `2px solid ${
+            borderBottomColors[
+              Math.floor(Math.random() * borderBottomColors.length)
+            ]
+          }`,
+        },
         { at: editor.selection, split: true },
       );
     }
+    if (action === 'unwrap') {
+      Transforms.unwrapNodes(editor, { at: editor.selection });
+    }
+    if (action === 'addComment') {
+      const comment = {
+        id: `c-${Date.now()}`,
+        timestamp: Date.now(),
+        comment: values.comment,
+        username: faker.person.fullName(),
+      };
+      Transforms.setNodes(
+        editor,
+        { [comment.id]: comment },
+        { at: editor.selection, match: (n) => n.type === 'comment' },
+      );
+    }
+
+    return;
+    // let currentSelectionCommentNode = null;
+    // const commentNodes = Editor.nodes(editor, {
+    //   match: (n) => n.type === 'comment',
+    // });
+    // const commentNodesArray = Array.from(commentNodes);
+    // for (const [commentNode, commentNodePath] of commentNodesArray) {
+    //   const commentNodeRange = editor.range(editor, commentNodePath);
+    //   console.log({ commentNodeRange });
+    //   if (Range.equals(commentNodeRange, editor.selection)) {
+    //     currentSelectionCommentNode = commentNode;
+    //     break;
+    //   }
+    // }
+    // console.log({ currentSelectionCommentNode });
+    // // 如果当前选区是comment节点
+    // if (currentSelectionCommentNode) {
+    //   const prevComments = currentSelectionCommentNode.comments;
+    //   // comment非空，添加新的评论
+    //   if (comment) {
+    //     const newComment = {
+    //       id: 'c-' + Date.now(),
+    //       timestamp: Date.now(),
+    //       content: comment,
+    //     };
+    //     Transforms.setNodes(
+    //       editor,
+    //       { comments: [...prevComments, newComment] },
+    //       { at: editor.selection },
+    //     );
+    //   } else {
+    //     // comment 空，且前值也为空，则unwrap
+    //     if (prevComments.length === 0) {
+    //       Transforms.unwrapNodes(editor, { at: editor.selection });
+    //     }
+    //   }
+    // } else {
+    //   // 当前选区不是 comment 节点
+    //   // 首先临时转换成comment类型并增加comments属性
+    //   // 再添加评论时进入if分支
+    //   Transforms.wrapNodes(
+    //     editor,
+    //     { type: 'comment', comments: [] },
+    //     { at: editor.selection, split: true },
+    //   );
+    // }
   },
   // addMark removeMark 只能操作当前选区，不能指定选区
   // todo 评论选区重叠或包含时，重叠部分或范围较大的部分被单独拆分，背景色不一致

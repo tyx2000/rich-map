@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import colors from '../../../constances/colors';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 const bgColors = Object.keys(colors)
   .map((type) => colors[type][1])
@@ -47,6 +49,7 @@ export default function LeafElement({
   const hasComment = Object.keys(leaf).some((key) => key.includes('c-'));
 
   const style = {
+    transition: 'all linear 0.1s',
     color: leaf.color || (hasComment ? 'purple' : '') || '',
     backgroundColor:
       leaf.highlight || (hasComment ? leaf.commentBackgroundColor : '') || '',
@@ -54,6 +57,13 @@ export default function LeafElement({
       ? `2px solid ${leaf.commentBorderColor}`
       : '',
   };
+
+  const leafRef = useRef();
+  useClickOutside(leafRef, () => {
+    if (leafRef.current) {
+      leafRef.current.style.fontWeight = 'normal';
+    }
+  });
 
   // todo 获取当前Leaf的Range，根据Range来定位CommentList, Range未变动时毋需重新计算位置
   // todo 根据Range显示 indicator 高亮当前 mark 的 Leaf（但是存在分割问题
@@ -63,6 +73,11 @@ export default function LeafElement({
       const comments = commentKeys.map((key) => leaf[key]);
       if (comments.length === 0) return;
       setComments(comments);
+
+      if (leafRef.current) {
+        // 存在因选区重叠而导致的分割问题
+        leafRef.current.style.fontWeight = 'bold';
+      }
     } else {
       setComments(null);
     }
@@ -70,6 +85,7 @@ export default function LeafElement({
 
   return (
     <span
+      ref={leafRef}
       {...attributes}
       {...(leaf.highlight && { 'data-cy': 'search-highlight' })}
       style={style}

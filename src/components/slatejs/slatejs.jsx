@@ -126,6 +126,7 @@ const defaultValue = [
   // },
 ];
 
+//#region
 const searchParams =
   typeof document === 'undefined'
     ? null
@@ -207,8 +208,10 @@ const createEditor = (config) => {
     config.chunking && Editor.isEditor(node) ? config.chunkSize : null;
   return editor;
 };
+//#endregion
 
 export default function Slatejs({ sharedType, provider }) {
+  //#region
   // const [editor] = useState(() => withReact(createEditor()));
   // const editor = useMemo(() => {
   //   const editor = withCustomerElement(withHistory(withReact(createEditor())));
@@ -254,6 +257,7 @@ export default function Slatejs({ sharedType, provider }) {
 
   //   return editor;
   // };
+  //#endregion
 
   const [rendering, setRendering] = useState(false);
   const [config, baseSetConfig] = useState(initialConfig);
