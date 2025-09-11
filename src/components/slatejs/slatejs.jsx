@@ -446,8 +446,6 @@ export default function Slatejs({ sharedType, provider }) {
   const handleSelectionChange = (selection) => {
     if (showCommentInput) {
       setShowCommentInput(false);
-      Transforms.select(editor, currentSelectionRef.current);
-      slateCommand.commentAction(editor, 'check');
     }
     if (selection) {
       // anchor.path 开始节点路径 anchor.offset 在开始节点中的偏移
@@ -549,7 +547,11 @@ export default function Slatejs({ sharedType, provider }) {
             showCommentInput={showCommentInput}
             commentClickHandler={commentClickHandler}
           />
-          <CommentInput onOk={onComment} showCommentInput={showCommentInput} />
+          <CommentInput
+            onOk={onComment}
+            showCommentInput={showCommentInput}
+            commentSelection={currentSelectionRef.current}
+          />
           <CommentList comments={comments} />
           <SlashMenu showSlashMenu={showSlashMenu} />
           <Editable

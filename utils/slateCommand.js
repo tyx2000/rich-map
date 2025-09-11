@@ -1,6 +1,14 @@
 import { faker } from '@faker-js/faker';
 import { Editor, Element, Path, Range, Transforms } from 'slate';
 import { HistoryEditor } from 'slate-history';
+import colors from '../src/constances/colors';
+
+const bgColors = Object.keys(colors)
+  .map((type) => colors[type][2])
+  .slice(1);
+const borderBottomColors = Object.keys(colors)
+  .map((type) => colors[type][4])
+  .slice(1);
 
 const slateCommand = {
   isButtonActive(editor) {
@@ -313,10 +321,17 @@ const slateCommand = {
     }
   },
   // addMark removeMark 只能操作当前选区，不能指定选区
+  // todo 评论选区重叠或包含时，重叠部分或范围较大的部分被单独拆分，背景色不一致
   commentAction(editor, action, values = {}) {
     if (!editor.selection || Range.isCollapsed(editor.selection)) return;
     if (action === 'addTemporaryMark') {
-      Editor.addMark(editor, 'withComment', true);
+      Editor.addMark(
+        editor,
+        'commentBorderColor',
+        borderBottomColors[
+          Math.floor(Math.random() * borderBottomColors.length)
+        ],
+      );
       // 设置mark后，回传最新的selection，check时用
       values.setNewMarkSelection(editor.selection);
     }
@@ -329,7 +344,7 @@ const slateCommand = {
         const marks = Editor.marks(editor);
         const hasComment = Object.keys(marks).some((key) => key.includes('c-'));
         if (!hasComment) {
-          Editor.removeMark(editor, 'withComment');
+          Editor.removeMark(editor, 'commentBorderColor');
         }
       } else {
         // 否则删除所有评论
@@ -342,7 +357,7 @@ const slateCommand = {
             Editor.removeMark(editor, key);
           });
         }
-        Editor.removeMark(editor, 'withComment');
+        Editor.removeMark(editor, 'commentBorderColor');
       }
     }
     if (action === 'addMark') {
@@ -354,7 +369,18 @@ const slateCommand = {
       // console.log({ marks, anchor, focus });
 
       const timestamp = Date.now();
-      Editor.addMark(editor, 'withComment', true);
+      Editor.addMark(
+        editor,
+        'commentBorderColor',
+        borderBottomColors[
+          Math.floor(Math.random() * borderBottomColors.length)
+        ],
+      );
+      Editor.addMark(
+        editor,
+        'commentBackgroundColor',
+        bgColors[Math.floor(Math.random() * bgColors.length)],
+      );
       Editor.addMark(editor, `c-${timestamp}`, {
         id: `c-${timestamp}`,
         timestamp,
@@ -366,8 +392,8 @@ const slateCommand = {
     if (action === 'check') {
       const marks = Editor.marks(editor);
       const hasComment = Object.keys(marks).some((key) => key.includes('c-'));
-      if (marks.withComment && !hasComment) {
-        Editor.removeMark(editor, 'withComment');
+      if (marks.commentBorderColor && !hasComment) {
+        Editor.removeMark(editor, 'commentBorderColor');
       }
     }
   },

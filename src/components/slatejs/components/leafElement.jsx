@@ -43,25 +43,22 @@ export default function LeafElement({
   }
 
   // todo 显示commentInput，选区变更，隐藏commentInput，原选区还带有 withComment mark，需删除
+  // done 回传当时selection当commentInput隐藏时 检查回传选区的Mark是否完整
   const hasComment = Object.keys(leaf).some((key) => key.includes('c-'));
 
   const style = {
     color: leaf.color || (hasComment ? 'purple' : '') || '',
     backgroundColor:
-      leaf.highlight ||
-      (hasComment
-        ? bgColors[Math.floor(Math.random() * bgColors.length)]
-        : '') ||
-      '',
-    borderBottom: leaf.withComment
-      ? `2px solid ${borderBottomColors[Math.floor(Math.random() * borderBottomColors.length)]}`
+      leaf.highlight || (hasComment ? leaf.commentBackgroundColor : '') || '',
+    borderBottom: leaf.commentBorderColor
+      ? `2px solid ${leaf.commentBorderColor}`
       : '',
   };
 
   // todo 获取当前Leaf的Range，根据Range来定位CommentList, Range未变动时毋需重新计算位置
   // todo 根据Range显示 indicator 高亮当前 mark 的 Leaf（但是存在分割问题
   const handleClickLeaf = () => {
-    if (leaf.withComment) {
+    if (leaf.commentBorderColor) {
       const commentKeys = Object.keys(leaf).filter((key) => key.includes('c-'));
       const comments = commentKeys.map((key) => leaf[key]);
       if (comments.length === 0) return;

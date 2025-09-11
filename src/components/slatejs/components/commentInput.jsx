@@ -5,9 +5,17 @@ import {
   getSelectionOffset,
   makeElementVisiable,
 } from '../../../../utils/helper';
+import { Transforms } from 'slate';
+import { useSlate } from 'slate-react';
+import slateCommand from '../../../../utils/slateCommand';
 
-export default function CommentInput({ showCommentInput, onOk }) {
+export default function CommentInput({
+  commentSelection,
+  showCommentInput,
+  onOk,
+}) {
   const ref = useRef(null);
+  const editor = useSlate();
   const [comment, setComment] = useState('');
 
   const confirmComment = () => {
@@ -51,6 +59,11 @@ export default function CommentInput({ showCommentInput, onOk }) {
       el.style.opacity = '0';
       el.style.top = '-10000px';
       el.style.left = '-10000px';
+
+      if (commentSelection) {
+        Transforms.select(editor, commentSelection);
+        slateCommand.commentAction(editor, 'check');
+      }
     }
   }, [showCommentInput]);
 
