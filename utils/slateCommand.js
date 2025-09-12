@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { Editor, Element, Path, Range, Transforms } from 'slate';
+import { Editor, Element, Path, Range, Text, Transforms } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import colors from '../src/constances/colors';
 
@@ -127,6 +127,7 @@ const slateCommand = {
   },
   // addmark 在当前选区的叶子文本节点或任何 editor.markableVoid() 节点上添加自定义属性
   toggleMark(editor, formatLabel, formatValue) {
+    console.log(formatLabel, formatValue);
     const marks = Editor.marks(editor);
     const isActive = marks ? marks[formatLabel] === formatValue : false;
     if (isActive) {
@@ -281,6 +282,7 @@ const slateCommand = {
         editor,
         {
           type: 'comment',
+          nodeId: 'comment-' + Date.now(),
           borderBottom: `2px solid ${
             borderBottomColors[
               Math.floor(Math.random() * borderBottomColors.length)

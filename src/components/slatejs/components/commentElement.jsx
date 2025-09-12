@@ -1,12 +1,18 @@
-import colors from '../../../constances/colors';
+import { ReactEditor, useSlate } from 'slate-react';
 
 export default function CommentElement({ attributes, element, children }) {
+  const editor = useSlate();
+  const commentNodePath = ReactEditor.findPath(editor, element);
+  console.log(commentNodePath, element.nodeId);
+
   const clickCommentHandler = (e) => {
     e.stopPropagation();
-    console.log('CommentElement', element);
+    // Transforms.select(editor, nodePath);
+    // const [node] = Editor.nodes(editor, {
+    //   at: nodePath,
+    // });
+    // console.log('====>', nodePath, node);
   };
-
-  console.log(element);
 
   return (
     <span

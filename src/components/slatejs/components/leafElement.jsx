@@ -1,13 +1,5 @@
 import { useRef } from 'react';
-import colors from '../../../constances/colors';
 import useClickOutside from '../../../hooks/useClickOutside';
-
-const bgColors = Object.keys(colors)
-  .map((type) => colors[type][1])
-  .slice(1);
-const borderBottomColors = Object.keys(colors)
-  .map((type) => colors[type][3])
-  .slice(1);
 
 export default function LeafElement({
   attributes,
@@ -44,6 +36,8 @@ export default function LeafElement({
     children = <h5>{children}</h5>;
   }
 
+  console.log(leaf);
+
   // todo 显示commentInput，选区变更，隐藏commentInput，原选区还带有 withComment mark，需删除
   // done 回传当时selection当commentInput隐藏时 检查回传选区的Mark是否完整
   const hasComment = Object.keys(leaf).some((key) => key.includes('c-'));
@@ -60,7 +54,7 @@ export default function LeafElement({
 
   const leafRef = useRef();
   useClickOutside(leafRef, () => {
-    if (leafRef.current) {
+    if (leafRef.current && leaf.commentBorderColor) {
       leafRef.current.style.fontWeight = 'normal';
     }
   });
@@ -69,6 +63,16 @@ export default function LeafElement({
   // todo 根据Range显示 indicator 高亮当前 mark 的 Leaf（但是存在分割问题
   const handleClickLeaf = () => {
     if (leaf.commentBorderColor) {
+      console.log(leaf);
+
+      // const leafCommentIds = Object.keys(leaf).filter((key) =>
+      //   key.includes('c-'),
+      // );
+      // const [relativeLeaf] = Editor.nodes(editor, {
+      //   match: (n) => Text.isText(n) && leafCommentIds.some((c) => !!n[c]),
+      // });
+      // console.log(leafCommentIds, relativeLeaf);
+
       const commentKeys = Object.keys(leaf).filter((key) => key.includes('c-'));
       const comments = commentKeys.map((key) => leaf[key]);
       if (comments.length === 0) return;

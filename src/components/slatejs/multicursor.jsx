@@ -1,6 +1,6 @@
-import { useRemoteCursorOverlayPositions } from "@slate-yjs/react";
-import { useRef } from "react";
-import styles from "./multicursor.module.css";
+import { useRemoteCursorOverlayPositions } from '@slate-yjs/react';
+import { useRef } from 'react';
+import styles from './multicursor.module.css';
 
 function Caret({ caretPosition, data }) {
   const caretStyle = {
@@ -9,7 +9,7 @@ function Caret({ caretPosition, data }) {
   };
 
   const labelStyle = {
-    transform: "translateY(-100%)",
+    transform: 'translateY(-100%)',
     background: data?.color,
   };
 
@@ -48,7 +48,7 @@ function Selection({ data, selectionRects, caretPosition }) {
 export function Cursors({ children }) {
   const containerRef = useRef(null);
   const [cursors] = useRemoteCursorOverlayPositions({ containerRef });
-  console.log({ cursors });
+  // console.log({ cursors });
 
   return (
     <div className={styles.cursor} ref={containerRef}>
