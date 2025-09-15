@@ -1,3 +1,10 @@
 export default function DefaultElement(props) {
-  return <pre {...props.attributes}>{props.children}</pre>;
+  return (
+    <div
+      {...props.attributes}
+      style={{ flex: 1, wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}
+    >
+      {props.children}
+    </div>
+  );
 }

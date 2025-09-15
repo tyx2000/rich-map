@@ -69,4 +69,5 @@ export const makeElementVisiable = (element) => {
   if (bottomOut) {
     element.style.top = `${screenHeight - height - 10}px`;
   }
+  element.style.opacity = '1';
 };

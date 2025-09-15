@@ -84,7 +84,7 @@ export default function SlashMenu({ showSlashMenu }) {
     if (!el) return;
     if (showSlashMenu) {
       const offset = getSelectionOffset();
-      el.style.opacity = '1';
+      // el.style.opacity = '1';
       el.style.top = `${offset.top + window.pageYOffset + offset.height}px`;
       el.style.left = `${offset.left + 10}px`;
 

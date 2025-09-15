@@ -35,7 +35,7 @@ export default function HoveringToolbar({
       return;
     }
     const offset = getSelectionOffset();
-    el.style.opacity = '1';
+    // el.style.opacity = '1';
     el.style.top = `${offset.top + window.pageYOffset - el.offsetHeight}px`;
     el.style.left = `${offset.left + window.pageXOffset - el.offsetWidth / 2 + offset.width / 2}px`;
 

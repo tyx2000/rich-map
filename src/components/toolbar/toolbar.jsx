@@ -14,6 +14,7 @@ import {
 } from '../../constances/tools';
 import { Transforms } from 'slate';
 import { makeElementVisiable } from '../../../utils/helper';
+import Portal from '../portal';
 
 function renderIcon(name, onSet) {
   switch (name) {
@@ -36,7 +37,10 @@ export default function Toolbar({ hovering, commentClickHandler }) {
   const editor = useSlateStatic();
   const toolbarRef = useRef(null);
   const [selectedToolName, setSelectedToolName] = useState('');
-  const [optionsOffsetLeft, setOptionsOffsetLeft] = useState(0);
+  const [optionsOffset, setOptionsOffset] = useState({
+    left: -10000,
+    top: -10000,
+  });
   const [inputUrlFileType, setInputUrlFileType] = useState(false);
 
   useClickOutside(toolbarRef, () => {
@@ -50,8 +54,7 @@ export default function Toolbar({ hovering, commentClickHandler }) {
       const childOffset = childEl.getBoundingClientRect();
       // const parentEl = childEl.parentNode;
       // const parentOffset = parentEl.getBoundingClientRect();
-      // setOptionsOffsetLeft(childOffset.left - parentOffset.left);
-      setOptionsOffsetLeft(childOffset.left);
+      setOptionsOffset({ top: childOffset.top + 40, left: childOffset.left });
 
       setTimeout(() => {
         const el = document.getElementById('toolOptions');
@@ -168,16 +171,18 @@ export default function Toolbar({ hovering, commentClickHandler }) {
         </div>
       ))}
       {toolsWithOptions.includes(selectedToolName) && (
-        <div
-          id="toolOptions"
-          className={styles.options}
-          style={{
-            left: optionsOffsetLeft,
-            opacity: +!!selectedToolName,
-          }}
-        >
-          {renderOptions(selectedToolName, onSet)}
-        </div>
+        <Portal>
+          <div
+            id="toolOptions"
+            className={styles.options}
+            style={{
+              ...optionsOffset,
+              opacity: +!!selectedToolName,
+            }}
+          >
+            {renderOptions(selectedToolName, onSet)}
+          </div>
+        </Portal>
       )}
       {inputUrlFileType && (
         <InputUrlModal

@@ -48,7 +48,7 @@ export default function CommentInput({
     if (!el) return;
     if (showCommentInput) {
       const offset = getSelectionOffset();
-      el.style.opacity = '1';
+      // el.style.opacity = '1';
       el.style.top = `${offset.top + window.pageYOffset + offset.height}px`;
       el.style.left = `${offset.left + window.pageXOffset - el.offsetWidth / 2 + offset.width / 2}px`;
       makeElementVisiable(el);

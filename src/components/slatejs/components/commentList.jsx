@@ -16,7 +16,7 @@ export default function CommentList({ comments }) {
     if (!el) return;
     if (comments && comments.length) {
       const offset = getSelectionOffset();
-      el.style.opacity = '1';
+      // el.style.opacity = '1';
       el.style.top = `${offset.top + window.pageYOffset + offset.height}px`;
       el.style.left = `${offset.left + window.pageXOffset - el.offsetWidth / 2 + offset.width / 2}px`;
 
